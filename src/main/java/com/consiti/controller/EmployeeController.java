@@ -3,30 +3,17 @@ package com.consiti.controller;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.web.bind.annotation.*;
 import com.consiti.entity.Employee;
 import com.consiti.repository.EmployeeRepository;
-//import com.consiti.repository.EmployeeRepository;
-//import com.consiti.service.IEmployeeService;
 import com.consiti.serviceImplement.EmployeeService;
-//import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
 
-
-
-
-@Controller
+@CrossOrigin(origins = "*")
+@RestController
+@RequestMapping("/employee")
 public class EmployeeController {
 	
 	@Autowired
@@ -36,18 +23,13 @@ public class EmployeeController {
 	EmployeeRepository	repository;
 
 	
-	@GetMapping(value = "/employees", produces=  {"application/json"})
+	@GetMapping(value = "/", produces=  {"application/json"})
 	public @ResponseBody List<Employee> listar(){
 		return employeeservice.findAll();
 
 	}
-	
-	/**
-	 * Devuelve empleado por id
-	 * @param id
-	 * @return
-	 */
-	@GetMapping(value="/employee/{id}", produces=  {"application/json"})
+
+	@GetMapping(value="/{id}", produces=  {"application/json"})
 	public ResponseEntity<?> findById(@PathVariable("id") String id) {
 		try {
 			//Comprobar que el usuario existe por id
@@ -55,7 +37,6 @@ public class EmployeeController {
 			if (existe) {
 				//Si existe devuelve al empleado
 				Employee employee = employeeservice.findOne(id);
-				
 				return ResponseEntity.status(HttpStatus.OK).body(employee);
 			}
 		} catch (Exception e) {
@@ -64,12 +45,8 @@ public class EmployeeController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Empleado con id "+id+" no encontrado");
 	}
 	
-	/**
-	 * Crea un nuevo empleado en la DB
-	 * @param newEmployee
-	 * @return
-	 */
-	@PostMapping(value="/employees",produces=  {"application/json"})
+
+	@PostMapping(value="/",produces=  {"application/json"})
 	public ResponseEntity<?> createEmployee(@RequestBody Employee newEmployee) {
 		
 		try {
@@ -82,13 +59,8 @@ public class EmployeeController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 	}
 	
-	/**
-	 * Modifica los campos de un empleado por id
-	 * @param id
-	 * @param updatedEmployee
-	 * @return
-	 */
-	@PutMapping(value="/employee/{id}")
+
+	@PutMapping(value="/{id}")
 	public ResponseEntity<?> updateEmployee(@PathVariable("id") String id,@RequestBody Employee updatedEmployee) {
 		try {
 			boolean existe = repository.existsById(id);
@@ -108,12 +80,8 @@ public class EmployeeController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 	}
 
-	/**
-	 * Elimina un empleado por id
-	 * @param id
-	 * @return
-	 */
-	@DeleteMapping(value="/employee/{id}", produces=  {"application/json"})
+
+	@DeleteMapping(value="/{id}", produces=  {"application/json"})
 	public ResponseEntity<?> deleteEmployee(@PathVariable("id") String id) {
 		
 		try {
