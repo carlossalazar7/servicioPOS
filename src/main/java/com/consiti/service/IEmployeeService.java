@@ -12,8 +12,8 @@ public interface IEmployeeService {
 
 	public void save(Employee empleado);
 
-	public Employee findOne(Integer id);
+	public Employee findOne(String id);
 
-	public void delete(Integer id);
+	public void delete(String id);
 	
 }
