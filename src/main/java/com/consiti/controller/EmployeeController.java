@@ -47,10 +47,10 @@ public class EmployeeController {
 	
 
 	@PostMapping(value="/",produces=  {"application/json"})
-	public ResponseEntity<?> createEmployee(@RequestBody Employee newEmployee) {
+	public ResponseEntity<?> createEmployee(@RequestBody Employee employee) {
 		
 		try {
-			employeeservice.save(newEmployee);
+			employeeservice.save(employee);
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error en createEmployee()", e);
@@ -66,12 +66,12 @@ public class EmployeeController {
 			boolean existe = repository.existsById(id);
 			if (existe && updatedEmployee!=null) {
 				Employee employee = employeeservice.findOne(id);
-				employee.setAccountName(updatedEmployee.getAccountName());
+				employee.setEmail(updatedEmployee.getEmail());
 				employee.setName(updatedEmployee.getName());
 				employee.setPhone(updatedEmployee.getPhone());
-				employee.setSalesPerson(updatedEmployee.getSalesPerson());
-				employee.setCashierInfo(updatedEmployee.getCashierInfo());
-				employee.setEmpType(updatedEmployee.getEmpType());
+				employee.setSalesperson_ind(updatedEmployee.getSalesperson_ind());
+				employee.setCashier_ind(updatedEmployee.getCashier_ind());
+				employee.setEmp_type(updatedEmployee.getEmp_type());
 				employeeservice.save(employee);
 
 				return ResponseEntity.status(HttpStatus.OK).body("Datos de usuario actualizados");			}

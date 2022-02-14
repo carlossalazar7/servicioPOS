@@ -28,7 +28,6 @@ public class EmployeeService implements IEmployeeService{
 	@Transactional 
 	public void save(Employee empleado) {
 		// TODO Auto-generated method stub
-		
 		employee.save(empleado);
 	}
 
