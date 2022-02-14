@@ -8,13 +8,12 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "EMPLOYEE")
-
 public class Employee implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(name = "EMP_ID", nullable = false)
-    private  Integer id;
+    @Column(name = "EMP_ID", nullable = false, length = 10)
+    private  String id;
 
     @Column(name = "EMAIL", nullable = false, length = 100)
     private String accountName;
@@ -34,7 +33,7 @@ public class Employee implements Serializable {
     @Column(name = "CASHIER_IND", nullable = false, length = 1)
     private String cashierInfo;
 
-    @Column(name = "EMP_TYPE", nullable = false, length = 1)
+    @Column(name = "EMP_TYPE", nullable = false, length = 20)
     private String empType;
 
 }

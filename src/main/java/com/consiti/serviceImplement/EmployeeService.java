@@ -34,14 +34,14 @@ public class EmployeeService implements IEmployeeService{
 
 	@Override
 	@Transactional(readOnly = true) 
-	public Employee findOne(Integer id) {
+	public Employee findOne(String id) {
 		// TODO Auto-generated method stub
 		return employee.findById(id).orElse(null);
 	}
 
 	@Override
 	@Transactional
-	public void delete(Integer id) {
+	public void delete(String id) {
 		// TODO Auto-generated method stub
 		employee.deleteById(id);
 	}
