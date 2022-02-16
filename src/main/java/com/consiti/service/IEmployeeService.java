@@ -16,4 +16,6 @@ public interface IEmployeeService {
 
 	public void delete(String id);
 	
+	public boolean errorEmail(String email);
+	
 }

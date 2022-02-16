@@ -3,6 +3,8 @@ package com.consiti.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+
 import java.io.Serializable;
 
 @Data
@@ -15,6 +17,7 @@ public class Employee implements Serializable {
     @Column(name = "EMP_ID", nullable = false, length = 10)
     private  String emp_id;
 
+    @Email
     @Column(name = "EMAIL", nullable = false, length = 100)
     private String email;
 
@@ -36,4 +39,6 @@ public class Employee implements Serializable {
     @Column(name = "EMP_TYPE", nullable = false, length = 20)
     private String emp_type;
 
+	
+    
 }

@@ -3,9 +3,18 @@ package com.consiti.controller;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import com.consiti.entity.Employee;
 import com.consiti.repository.EmployeeRepository;
@@ -22,6 +31,7 @@ public class EmployeeController {
 	@Autowired
 	EmployeeRepository	repository;
 
+	
 	
 	@GetMapping(value = "/", produces=  {"application/json"})
 	public @ResponseBody List<Employee> listar(){
@@ -46,8 +56,13 @@ public class EmployeeController {
 	}
 	
 
-	@PostMapping(value="/",produces=  {"application/json"})
-	public ResponseEntity<?> createEmployee(@RequestBody Employee employee) {
+	@PostMapping(value="/", produces=  {"application/json"})
+	public ResponseEntity<?> createEmployee(@RequestBody Employee employee,BindingResult result, Model map) {
+
+		if(employeeservice.errorEmail(employee.getEmail())) {
+			
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Inserte un correo valido");
+		}
 		
 		try {
 			employeeservice.save(employee);
@@ -62,10 +77,16 @@ public class EmployeeController {
 
 	@PutMapping(value="/{id}")
 	public ResponseEntity<?> updateEmployee(@PathVariable("id") String id,@RequestBody Employee updatedEmployee) {
+		if (employeeservice.errorEmail(updatedEmployee.getEmail())) {
+
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Inserte un correo valido");
+		}
+		
 		try {
 			boolean existe = repository.existsById(id);
 			if (existe && updatedEmployee!=null) {
 				Employee employee = employeeservice.findOne(id);
+				
 				employee.setEmail(updatedEmployee.getEmail());
 				employee.setName(updatedEmployee.getName());
 				employee.setPhone(updatedEmployee.getPhone());

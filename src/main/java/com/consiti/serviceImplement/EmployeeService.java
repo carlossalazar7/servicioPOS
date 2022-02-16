@@ -1,6 +1,8 @@
 package com.consiti.serviceImplement;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +45,18 @@ public class EmployeeService implements IEmployeeService{
 	public void delete(String id) {
 		// TODO Auto-generated method stub
 		employee.deleteById(id);
+	}
+
+	@Override
+	public boolean errorEmail(String email) {
+		String regx = "^[A-Za-z0-9+_.-]+@(.+)$";  
+        //Compile regular expression to get the pattern  
+        Pattern pattern = Pattern.compile(regx); 
+        Matcher matcher = pattern.matcher(email);
+        if(matcher.matches()) {
+        	return false;
+        }
+        return true;
 	}
 
 	
