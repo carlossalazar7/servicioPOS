@@ -33,7 +33,7 @@ public class StoreService implements IStoreService{
 	@Override
 	@Transactional(readOnly = true) 
 	public Store findOne(Integer id) {
-		// TODO Auto-generated method stub
+		
 		return storerepo.findById(id).orElse(null);
 	}
 
@@ -49,5 +49,6 @@ public class StoreService implements IStoreService{
 		
 		return storerepo.existsById(id);
 	}
+
 
 }

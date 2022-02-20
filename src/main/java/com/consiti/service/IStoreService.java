@@ -15,4 +15,5 @@ public interface IStoreService {
 	public void delete(Integer id);
 	
 	public boolean existStoreById(Integer id);
+	
 }

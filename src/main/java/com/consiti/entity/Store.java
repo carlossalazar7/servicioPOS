@@ -1,14 +1,16 @@
 package com.consiti.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+//import java.util.Date;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -26,9 +28,10 @@ public class Store implements Serializable{
 	@Column(name="STORE", unique=true, nullable=false)
 	private Integer store;
 
-	@Temporal(TemporalType.DATE)
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@Column(name="ACQUIRED_DATE")
-	private Date acquiredDate;
+	private LocalDate acquiredDate;
 
 	@Column(name="AUTO_APPROVE_ORDERS_IND", length=1)
 	private String autoApproveOrdersInd;
@@ -54,6 +57,7 @@ public class Store implements Serializable{
 	@Column(name="DUNS_NUMBER", length=9)
 	private String dunsNumber;
 
+	@Email(message = "Dirección de correo invalida")
 	@Column(name="EMAIL", length=100)
 	private String email;
 
@@ -84,9 +88,9 @@ public class Store implements Serializable{
 	@Column(name="REMERCH_IND", length=1)
 	private String remerchInd;
 
-	@Temporal(TemporalType.DATE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@Column(name="REMODEL_DATE")
-	private Date remodelDate;
+	private LocalDate remodelDate;
 
 	@Column(name="SELLING_SQUARE_FT")
 	private Integer sellingSquareFt;
@@ -103,14 +107,13 @@ public class Store implements Serializable{
 	@Column(name="STOP_ORDER_DAYS")
 	private Integer stopOrderDays;
 
-	
 	@Column(name="STORE_CLASS", length=1)
 	private String storeClass;
 
-	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "d/MM/yyyy")
-	@Temporal(TemporalType.DATE)
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@Column(name="STORE_CLOSE_DATE")
-	private Date storeCloseDate;
+	private LocalDate storeCloseDate;
 
 	@Column(name="STORE_FORMAT")
 	private Integer storeFormat;
@@ -130,10 +133,9 @@ public class Store implements Serializable{
 	@Column(name="STORE_NAME3", length=3)
 	private String storeName3;
 
-	
-	@Temporal(TemporalType.DATE)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@Column(name="STORE_OPEN_DATE")
-	private Date storeOpenDate;
+	private LocalDate storeOpenDate;
 
 	@Column(name="STORE_TYPE", length=6)
 	private String storeType;
