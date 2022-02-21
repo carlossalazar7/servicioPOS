@@ -97,12 +97,12 @@ public class StoreController {
 			
 			if (storeservice.existStoreById(id)) {
 				storeservice.delete(id);
-				return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Empleado con id "+id+" eliminado"));
+				return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Tienda con id "+id+" eliminado"));
 			}
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error en deleteStore()", e);
 		}		
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Mensaje("No se encuentra al empleado con id "+id));
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Mensaje("No se encuentra a la tienda con id "+id));
 	}
 
 }
