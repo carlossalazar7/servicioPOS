@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 
 import lombok.Data;
 
@@ -23,19 +24,19 @@ public class Metric implements Serializable{
     @Column(name = "METRIC_ID", nullable = false, length = 11)
     private Integer metric_id;
 
-     
+    @NotBlank
     @Column(name = "NAME", nullable = false, length = 100)
     private String name;
 
-     
+    @NotBlank
     @Column(name = "TYPE_CODE", nullable = false, length = 2)
     private String type_code;
 
-     
+    @NotBlank
     @Column(name = "VALUE", nullable = false, length = 100)
     private String value;
 
-     
+    @NotBlank
     @Column(name = "RELATED_ENTITY", length = 30)
     private String related_entity;
 

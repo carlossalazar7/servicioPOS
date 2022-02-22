@@ -1,5 +1,7 @@
 package com.consiti.controller;
 
+import javax.validation.Valid;
+
 import com.consiti.entity.Mensaje;
 import com.consiti.entity.Metric;
 import com.consiti.repository.MetricRepository;
@@ -8,6 +10,7 @@ import com.consiti.serviceImplement.MetricServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,10 +79,10 @@ public class MetricController {
     }
     
     @PostMapping(value="/",produces=  {"application/json"})
-    public ResponseEntity<?> crearMetrica(  @RequestBody Metric metric ) {
+    public ResponseEntity<?> crearMetrica(@Valid @RequestBody Metric metric, BindingResult result) {
         
         if (metric!=null) {
-            if (metric.getName()==null || metric.getName()=="" || metric.getType_code()==null || metric.getType_code()=="" || metric.getValue()==null || metric.getValue()=="" || metric.getRelated_entity()==null || metric.getRelated_entity()=="") {
+            if (result.hasErrors()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Campos requeridos"));
             }
             service.saveMetric(metric);
@@ -91,25 +94,19 @@ public class MetricController {
     }
 
     @PutMapping(value="/{id}",produces=  {"application/json"})
-    public ResponseEntity<?> updateMetric(  @PathVariable("id") Integer metric_id, @RequestBody Metric updatedMetric ) {
+    public ResponseEntity<?> updateMetric(  @PathVariable("id") Integer metric_id, @Valid @RequestBody Metric updatedMetric, BindingResult result ) {
         
         try {
             boolean existe = repository.existsById(metric_id);
 
             if (existe) {
-                if (updatedMetric.getName()==null || updatedMetric.getName()=="" || updatedMetric.getType_code()==null || updatedMetric.getType_code()=="" || updatedMetric.getValue()==null || updatedMetric.getValue()=="" || updatedMetric.getRelated_entity()==null || updatedMetric.getRelated_entity()=="") {
+                if (result.hasErrors()) {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Campos requeridos"));
                 }
-                Metric metric = service.getMetricById(metric_id);
-                metric.setName(updatedMetric.getName());
-                metric.setType_code(updatedMetric.getType_code());
-                metric.setValue(updatedMetric.getValue());
-                metric.setRelated_entity(updatedMetric.getRelated_entity());
-                metric.setAttr1(updatedMetric.getAttr1());
-                metric.setAttr2(updatedMetric.getAttr2());
-                metric.setAttr3(updatedMetric.getAttr3());
+                
+                updatedMetric.setMetric_id(metric_id);
 
-                service.saveMetric(metric);
+                service.saveMetric(updatedMetric);
                 return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Metrica con id "+metric_id+" actualizada"));
                 
             }
