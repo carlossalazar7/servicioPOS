@@ -17,6 +17,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import com.consiti.entity.Employee;
+import com.consiti.entity.Mensaje;
 import com.consiti.repository.EmployeeRepository;
 import com.consiti.serviceImplement.EmployeeService;
 
@@ -52,7 +53,7 @@ public class EmployeeController {
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error en findById", e);
 		}
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Empleado con id "+id+" no encontrado");
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Mensaje("Empleado con id "+id+" no encontrado"));
 	}
 	
 
@@ -65,13 +66,21 @@ public class EmployeeController {
 		}
 		
 		try {
-			employeeservice.save(employee);
-			return ResponseEntity.ok().build();
+			if (employeeservice.errorEmail(employee.getEmail())) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Inserte un correo valido"));
+			}
+			boolean existe = repository.existsById(employee.getEmp_id());
+			if (existe) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("El id "+employee.getEmp_id()+" ya está asociado a otro empleado"));
+			}else{
+				employeeservice.save(employee);
+				return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Empleado creado"));
+			}
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error en createEmployee()", e);
 		}
 		
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Invalid JSON"));
 	}
 	
 
@@ -83,6 +92,9 @@ public class EmployeeController {
 		}
 		
 		try {
+			if (employeeservice.errorEmail(updatedEmployee.getEmail())) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Inserte un correo valido"));
+			}
 			boolean existe = repository.existsById(id);
 			if (existe && updatedEmployee!=null) {
 				Employee employee = employeeservice.findOne(id);
@@ -95,10 +107,13 @@ public class EmployeeController {
 				employee.setEmp_type(updatedEmployee.getEmp_type());
 				employeeservice.save(employee);
 
-				return ResponseEntity.status(HttpStatus.OK).body("Datos de usuario actualizados");			}
+				return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Datos de usuario actualizados"));			
+			}else{
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("No existe el usuario con ID "+id));
+			}
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error en updateEmployee()", e);		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Invalid JSON"));
 	}
 
 
@@ -109,11 +124,11 @@ public class EmployeeController {
 			boolean existe = repository.existsById(id);
 			if (existe) {
 				employeeservice.delete(id);
-				return ResponseEntity.status(HttpStatus.OK).body("Empleado con id "+id+" eliminado");
+				return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Empleado con id "+id+" eliminado"));
 			}
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error en deleteEmployee()", e);
 		}		
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encuentra al empleado con id "+id);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Mensaje("No se encuentra al empleado con id "+id));
 	}
 }

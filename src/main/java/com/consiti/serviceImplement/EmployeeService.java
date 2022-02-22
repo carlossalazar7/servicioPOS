@@ -47,6 +47,7 @@ public class EmployeeService implements IEmployeeService{
 		employee.deleteById(id);
 	}
 
+
 	@Override
 	public boolean errorEmail(String email) {
 		String regx = "^[A-Za-z0-9+_.-]+@(.+)$";  
@@ -58,6 +59,7 @@ public class EmployeeService implements IEmployeeService{
         }
         return true;
 	}
+
 
 	
 }
