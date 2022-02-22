@@ -1,6 +1,5 @@
 package com.consiti.entity;
 
-import lombok.Data;
 
 public class Mensaje {
     
