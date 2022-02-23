@@ -6,6 +6,7 @@ import com.consiti.entity.ItemMaster;
 import com.consiti.entity.Mensaje;
 import com.consiti.serviceImplement.ItemMasterServiceImp;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
-
+import java.time.LocalDate;
 
 
 
@@ -54,13 +55,16 @@ public class ItemMasterController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Campos requeridos "+result.getFieldError().getField()+" "+result.getFieldError().getDefaultMessage()));
         }
         
-        if (!service.existeById(item.getItem())) {
-            
-            service.saveItem(item);
-            return ResponseEntity.ok(new Mensaje("Item creado."));
-        }else{
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Ya existe un item con el id "+item.getItem()));
+        String item_id = RandomStringUtils.randomAlphanumeric(20);
+
+        while (service.existeById(item_id)) {
+            item_id = RandomStringUtils.randomAlphanumeric(20);
         }
+        item.setItem(item_id);
+        item.setCreateDatetime(LocalDate.now());
+        item.setLastUpdateDatetime(LocalDate.now());
+        service.saveItem(item);
+        return ResponseEntity.ok(new Mensaje("Item creado."));
     }
     
     @PutMapping(value="/{item}")
@@ -71,6 +75,7 @@ public class ItemMasterController {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Campos requeridos "+result.getFieldError().getField()+" "+result.getFieldError().getDefaultMessage()));
             }
             producto.setItem(item);
+            producto.setLastUpdateDatetime(LocalDate.now());
             service.saveItem(producto);
             return ResponseEntity.ok(new Mensaje("Producto actualizado"));
         }else{
