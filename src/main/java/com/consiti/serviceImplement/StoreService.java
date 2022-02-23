@@ -27,6 +27,7 @@ public class StoreService implements IStoreService{
 	@Transactional 
 	public void save(Store store) {
 		storerepo.save(store);
+	
 		
 	}
 

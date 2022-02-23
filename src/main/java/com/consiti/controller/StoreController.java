@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.consiti.entity.Mensaje;
 import com.consiti.entity.Store;
+import com.consiti.repository.MetricRepository;
 import com.consiti.service.IStoreService;
 
 @CrossOrigin(origins = "*")
@@ -32,12 +33,16 @@ public class StoreController {
 
 	@Autowired
 	IStoreService storeservice;
+	
+	
 
 	@GetMapping(value = "/", produces = { "application/json" })
 	public @ResponseBody List<Store> listar() {
 
 		return storeservice.findAll();
 	}
+	
+	
 
 	@GetMapping(value = "/{id}", produces = { "application/json" })
 	public ResponseEntity<?> findById(@PathVariable("id") Integer id) {
