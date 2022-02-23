@@ -2,7 +2,6 @@ package com.consiti.repository;
 
 import com.consiti.entity.ITicket;
 import com.consiti.entity.Metric;
-import com.consiti.entity.Ticket;
 
 import java.util.List;
 

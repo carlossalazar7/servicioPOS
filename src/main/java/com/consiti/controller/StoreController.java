@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.consiti.entity.Mensaje;
 import com.consiti.entity.Store;
-import com.consiti.repository.MetricRepository;
 import com.consiti.service.IStoreService;
 
 @CrossOrigin(origins = "*")
