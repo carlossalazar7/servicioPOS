@@ -2,10 +2,10 @@ package com.consiti.entity;
 
 import java.util.Date;
 
-public interface ITicket {
+public interface Reportes {
 
 	 String getEntity();
-	 Date getKey_();
+	 Date getKey();
 	 Integer getValue();
 	 Integer getKpi();
 	 Double getProgress();

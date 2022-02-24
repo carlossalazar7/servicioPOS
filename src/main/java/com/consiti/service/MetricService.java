@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.consiti.entity.Metric;
 import com.consiti.entity.MetricType;
-import com.consiti.entity.ITicket;
+import com.consiti.entity.Reportes;
 
 public interface MetricService {
     
@@ -33,7 +33,7 @@ public interface MetricService {
      * 
      * Servicios para el Average Ticket**/
     
-    public List<ITicket>  getAvgTicket(String attr);
+    public List<Reportes>  getAvgTicket(String attr);
     
-    public ITicket getTicketByStore(String attr, Integer store);
+    public Reportes getTicketByStore(String attr, Integer store);
 }
