@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import com.consiti.entity.Metric;
 import com.consiti.entity.MetricType;
-import com.consiti.entity.ITicket;
+import com.consiti.entity.Reportes;
 import com.consiti.repository.MetricRepository;
 import com.consiti.repository.MetricTypeRepository;
 import com.consiti.service.MetricService;
@@ -105,13 +105,13 @@ public class MetricServiceImp implements MetricService {
     }
 
 	@Override
-	public  List<ITicket> getAvgTicket(String attr) {
+	public  List<Reportes> getAvgTicket(String attr) {
 		
 		return metricRepository.getTicket(attr);
 	}
 
 	@Override
-	public  ITicket getTicketByStore(String attr, Integer store) {
+	public  Reportes getTicketByStore(String attr, Integer store) {
 		// TODO Auto-generated method stub
 		return metricRepository.getTicketByStore(attr, store);
 	}
