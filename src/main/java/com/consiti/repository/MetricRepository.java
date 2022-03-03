@@ -13,37 +13,37 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MetricRepository extends JpaRepository<Metric, Integer>{
 	
-	@Query(value = "SELECT D.STORE_NAME ENTITY , B.BUSINESS_DATE 'KEY', AVG(A.VALUE) VALUE, C.VALUE KPI, AVG(A.VALUE)/C.VALUE PROGRESS \r\n"
+	@Query(value = "SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS \"KEY\", \r\n"
+			+ "SUM(A.VALUE) VALUE, C.VALUE KPI, sum(A.VALUE)/C.VALUE PROGRESS \r\n"
 			+ "FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D\r\n"
 			+ "WHERE A.TRAN_TYPE IN (\r\n"
 			+ "SELECT TRAN_TYPE FROM TRAN_TYPES\r\n"
 			+ "WHERE TYPE_CODE = 'SALE'\r\n"
 			+ ")\r\n"
 			+ "AND B.STORE_DAY_SEQ_NO = A.STORE_DAY_SEQ_NO\r\n"
-			+ "AND C.NAME = 'AvgTicket'\r\n"
+			+ "AND C.NAME = 'VentaConIVA'\r\n"
 			+ "AND C.type_code = 'TM'\r\n"
 			+ "AND ATTR1 = ?1 #Parametro Period\r\n"
 			+ "AND D.STORE = A.STORE\r\n"
-			+ "AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()\r\n"
 			+ "GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE;", nativeQuery = true)
 	List<Reportes>  getTicket(String attr);
 	
 	
-	@Query(value = "SELECT D.STORE_NAME ENTITY , B.BUSINESS_DATE 'KEY', AVG(A.VALUE) VALUE, C.VALUE KPI, AVG(A.VALUE)/C.VALUE PROGRESS \r\n"
+	@Query(value = "SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS \"KEY\", \r\n"
+			+ "SUM(A.VALUE) VALUE, C.VALUE KPI, sum(A.VALUE)/C.VALUE PROGRESS \r\n"
 			+ "FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D\r\n"
 			+ "WHERE A.TRAN_TYPE IN (\r\n"
 			+ "SELECT TRAN_TYPE FROM TRAN_TYPES\r\n"
 			+ "WHERE TYPE_CODE = 'SALE'\r\n"
 			+ ")\r\n"
 			+ "AND B.STORE_DAY_SEQ_NO = A.STORE_DAY_SEQ_NO\r\n"
-			+ "AND C.NAME = 'AvgTicket'\r\n"
+			+ "AND C.NAME = 'VentaConIVA'\r\n"
 			+ "AND C.type_code = 'TM'\r\n"
-			+ "AND ATTR1 = ?1 \r\n"
-			+ "AND A.STORE = ?2 \r\n"
+			+ "AND ATTR1 = ?1 #Parametro Period\r\n"
+			+ "AND A.STORE = ?2 #Parametro Store\r\n"
 			+ "AND D.STORE = A.STORE\r\n"
-			+ "AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()\r\n"
 			+ "GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE;", nativeQuery = true)
-	Reportes getTicketByStore(String attr, Integer store);
+	List<Reportes>  getTicketByStore(String attr, Integer store);
 	
 	@Query(value="SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS 'KEY', SUM(A.VALUE) VALUE, C.VALUE KPI, AVG(A.VALUE)/C.VALUE PROGRESS" 
 			+" FROM ConsitiPOS.TRAN_HEAD A, ConsitiPOS.STORE_DAY B, ConsitiPOS.METRIC C, ConsitiPOS.STORE D"

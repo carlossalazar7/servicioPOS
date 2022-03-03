@@ -35,5 +35,5 @@ public interface MetricService {
     
     public List<Reportes>  getAvgTicket(String attr);
     
-    public Reportes getTicketByStore(String attr, Integer store);
+    public  List<Reportes> getTicketByStore(String attr, Integer store);
 }

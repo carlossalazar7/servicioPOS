@@ -111,7 +111,7 @@ public class MetricServiceImp implements MetricService {
 	}
 
 	@Override
-	public  Reportes getTicketByStore(String attr, Integer store) {
+	public   List<Reportes> getTicketByStore(String attr, Integer store) {
 		// TODO Auto-generated method stub
 		return metricRepository.getTicketByStore(attr, store);
 	}
