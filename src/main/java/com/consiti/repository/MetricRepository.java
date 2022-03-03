@@ -45,7 +45,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+ "GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE;", nativeQuery = true)
 	List<Reportes>  getTicketByStore(String attr, Integer store);
 	
-	@Query(value="SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS 'KEY', SUM(A.VALUE) VALUE, C.VALUE KPI, AVG(A.VALUE)/C.VALUE PROGRESS" 
+	@Query(value="SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS 'KEY', SUM(A.VALUE) VALUE, C.VALUE KPI, sum(A.VALUE)/C.VALUE PROGRESS" 
 			+" FROM ConsitiPOS.TRAN_HEAD A, ConsitiPOS.STORE_DAY B, ConsitiPOS.METRIC C, ConsitiPOS.STORE D"
 			+" WHERE A.TRAN_TYPE IN ("
 			+" SELECT TRAN_TYPE FROM TRAN_TYPES"

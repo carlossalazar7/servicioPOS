@@ -262,12 +262,12 @@ public class ItemMaster implements Serializable {
     
     @NotNull
     @Column(name = "SUBCLASS", nullable = false)
-    private Integer subclass;
+    private String subclass;
 
     
     @NotNull
     @Column(name = "CLASS", nullable = false)
-    private Integer class1;
+    private String class1;
 
     
     @NotNull

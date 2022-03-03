@@ -36,7 +36,6 @@ public class Metric implements Serializable{
     @Column(name = "VALUE", nullable = false, length = 100)
     private String value;
 
-    @NotBlank
     @Column(name = "RELATED_ENTITY", length = 30)
     private String related_entity;
 

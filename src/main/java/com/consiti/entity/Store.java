@@ -11,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
 
@@ -27,8 +26,6 @@ public class Store implements Serializable{
 	@Column(name="STORE", unique=true, nullable=false)
 	private Integer store;
 
-	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@Column(name="ACQUIRED_DATE")
 	private LocalDate acquiredDate;
 
@@ -87,7 +84,6 @@ public class Store implements Serializable{
 	@Column(name="REMERCH_IND", length=1)
 	private String remerchInd;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@Column(name="REMODEL_DATE")
 	private LocalDate remodelDate;
 
@@ -109,8 +105,6 @@ public class Store implements Serializable{
 	@Column(name="STORE_CLASS", length=1)
 	private String storeClass;
 
-	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@Column(name="STORE_CLOSE_DATE")
 	private LocalDate storeCloseDate;
 
@@ -132,7 +126,6 @@ public class Store implements Serializable{
 	@Column(name="STORE_NAME3", length=3)
 	private String storeName3;
 
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	@Column(name="STORE_OPEN_DATE")
 	private LocalDate storeOpenDate;
 
