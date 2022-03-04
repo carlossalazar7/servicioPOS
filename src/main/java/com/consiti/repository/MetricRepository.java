@@ -55,12 +55,43 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+" AND C.NAME = 'VentaConIVA'"
 			+" AND C.type_code = 'TM'"
 			+" AND ATTR1 = :period"
+			+" AND D.STORE = A.STORE"
+			+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
+			+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
+	public List<Reportes> getVentasDiarias(@Param("period") String period);
+
+	@Query(value="SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS 'KEY', SUM(A.VALUE) VALUE, C.VALUE KPI, sum(A.VALUE)/C.VALUE PROGRESS" 
+			+" FROM ConsitiPOS.TRAN_HEAD A, ConsitiPOS.STORE_DAY B, ConsitiPOS.METRIC C, ConsitiPOS.STORE D"
+			+" WHERE A.TRAN_TYPE IN ("
+			+" SELECT TRAN_TYPE FROM TRAN_TYPES"
+			+" WHERE TYPE_CODE = 'SALE'"
+			+")"
+			+" AND B.STORE_DAY_SEQ_NO = A.STORE_DAY_SEQ_NO"
+			+" AND C.NAME = 'VentaConIVA'"
+			+" AND C.type_code = 'TM'"
+			+" AND ATTR1 = :period"
 			+" AND A.STORE = :store"
 			+" AND D.STORE = A.STORE"
 			+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
 			+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
-	public List<Reportes> getVentasDiarias(@Param("period") String period, @Param("store") Integer store);
+	public List<Reportes> getVentasDiariasByStore(@Param("period") String period, @Param("store") Integer store);
 
+	@Query(value="SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS 'KEY', SUM(E.QTY) VALUE, C.VALUE KPI, AVG(A.VALUE)/C.VALUE PROGRESS" 
+					+" FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D, TRAN_ITEM E"
+					+" WHERE A.TRAN_TYPE IN ("
+					+" SELECT TRAN_TYPE FROM TRAN_TYPES"
+					+" WHERE TYPE_CODE = 'SALE'"
+					+")"
+					+" AND B.STORE_DAY_SEQ_NO = A.STORE_DAY_SEQ_NO"
+					+" AND C.NAME = 'UnidadesVendidas'"
+					+" AND C.type_code = 'TM'"
+					+" AND ATTR1 = :period"
+					+" AND D.STORE = A.STORE"
+					+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
+					+" AND E.TRAN_SEQ_NO = A.TRAN_SEQ_NO"
+					+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
+	public List<Reportes> getUnidadesVendidas(@Param("period") String period);
+	
 	@Query(value="SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS 'KEY', SUM(E.QTY) VALUE, C.VALUE KPI, AVG(A.VALUE)/C.VALUE PROGRESS" 
 					+" FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D, TRAN_ITEM E"
 					+" WHERE A.TRAN_TYPE IN ("
@@ -76,8 +107,8 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 					+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
 					+" AND E.TRAN_SEQ_NO = A.TRAN_SEQ_NO"
 					+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
-	public List<Reportes> getUnidadesVendidas(@Param("period") String period, @Param("store") Integer store);
-	
+	public List<Reportes> getUnidadesVendidasByStore(@Param("period") String period, @Param("store") Integer store);
+
 	@Query(value="SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS \"KEY\", \r\n"
 			+ "SUM(A.VALUE) VALUE, C.VALUE KPI, sum(A.VALUE)/C.VALUE PROGRESS \r\n"
 			+ "FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D\r\n"

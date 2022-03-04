@@ -102,15 +102,15 @@ public class ReportesController {
 	 * @param store
 	 * @return
 	 */
-	@GetMapping(value="/ventas/{period}/{store}")
-	public ResponseEntity<?> ventasDiarias(@PathVariable("period") String period, @PathVariable("store") Integer store) {
+	@GetMapping(value="/ventas/{period}")
+	public ResponseEntity<?> ventasDiarias(@PathVariable("period") String period) {
 		
 		try {
-			if (repository.getVentasDiarias(period, store).isEmpty() || repository.getVentasDiarias(period, store) ==null ) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametros period: '"+period+"' y store: '"+store+"' sin resultados"));
+			if (repository.getVentasDiarias(period).isEmpty() || repository.getVentasDiarias(period) ==null ) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
 			}
 
-			return ResponseEntity.status(HttpStatus.OK).body(repository.getVentasDiarias(period, store));
+			return ResponseEntity.status(HttpStatus.OK).body(repository.getVentasDiarias(period));
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasDiarias()",e);
 		}
@@ -118,15 +118,47 @@ public class ReportesController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
 	}
 	
-	@GetMapping(value="/unidades-vendidas/{period}/{store}")
-	public ResponseEntity<?> unidadesVendidas(@PathVariable("period") String period, @PathVariable("store") Integer store) {
+	@GetMapping(value="/ventas/{period}/{store}")
+	public ResponseEntity<?> ventasDiariasByStore(@PathVariable("period") String period, @PathVariable("store") Integer store) {
 		
 		try {
-			if (repository.getUnidadesVendidas(period, store).isEmpty() || repository.getUnidadesVendidas(period, store) ==null ) {
+			if (repository.getVentasDiariasByStore(period, store).isEmpty() || repository.getVentasDiariasByStore(period, store) ==null ) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametros period: '"+period+"' y store: '"+store+"' sin resultados"));
 			}
 
-			return ResponseEntity.status(HttpStatus.OK).body(repository.getUnidadesVendidas(period, store));
+			return ResponseEntity.status(HttpStatus.OK).body(repository.getVentasDiariasByStore(period, store));
+		} catch (Exception e) {
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasDiarias()",e);
+		}
+		
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
+	}
+
+	@GetMapping(value="/unidades-vendidas/{period}")
+	public ResponseEntity<?> unidadesVendidas(@PathVariable("period") String period) {
+		
+		try {
+			if (repository.getUnidadesVendidas(period).isEmpty() || repository.getUnidadesVendidas(period) ==null ) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+			}
+
+			return ResponseEntity.status(HttpStatus.OK).body(repository.getUnidadesVendidas(period));
+		} catch (Exception e) {
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasDiarias()",e);
+		}
+		
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
+	}
+
+	@GetMapping(value="/unidades-vendidas/{period}/{store}")
+	public ResponseEntity<?> unidadesVendidasByStore(@PathVariable("period") String period, @PathVariable("store") Integer store) {
+		
+		try {
+			if (repository.getUnidadesVendidasByStore(period, store).isEmpty() || repository.getUnidadesVendidasByStore(period, store) ==null ) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametros period: '"+period+"' y store: '"+store+"' sin resultados"));
+			}
+
+			return ResponseEntity.status(HttpStatus.OK).body(repository.getUnidadesVendidasByStore(period, store));
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasDiarias()",e);
 		}
