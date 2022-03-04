@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.consiti.entity.Mensaje;
+import com.consiti.entity.Reporte;
 import com.consiti.repository.MetricRepository;
 import com.consiti.service.MetricService;
 
 
 
 @RestController
-@RequestMapping(value="/avgticket")
+@RequestMapping(value="/reportes")
 @CrossOrigin
 public class ReportesController {
 	
@@ -28,25 +29,30 @@ public class ReportesController {
 	
 	@Autowired
 	MetricRepository repository;
-
 	
-	@GetMapping(value="/{attr}", produces = {"application/json"})
+	@Autowired
+	Reporte report;
+
+	/**API's que retorna datos estadisticos de los AVGTICKET*/
+	@GetMapping(value="avg-ticket/{attr}", produces = {"application/json"})
 	public ResponseEntity<?> getTickets (@PathVariable String attr) {
 		try {
 			
-			
+			if(metricservice.getAvgTicket(attr).isEmpty()) {
+				return ResponseEntity.ok(new Mensaje("No existen registros de ticket promedio"));
+			}
 			return ResponseEntity.ok(metricservice.getAvgTicket(attr));
 		}catch(Exception e) {
-			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error en findById", e);
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error en getTickets", e);
 		}
 		
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Mensaje("Murio"));
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
 	}
 	
-	@GetMapping(value="/{attr}/{store}", produces= {"application/json"})
+	@GetMapping(value="avg-ticket/{attr}/{store}", produces= {"application/json"})
 	public ResponseEntity<?> getTicketByStore(@PathVariable String attr,@PathVariable Integer store){
 		try {
-			if(metricservice.getTicketByStore(attr, store)!=null) {
+			if(!metricservice.getTicketByStore(attr, store).isEmpty()) {
 				return ResponseEntity.ok(metricservice.getTicketByStore(attr, store));
 			}else {
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Mensaje("No se encontro nada con ese Store_ID"));
@@ -54,6 +60,38 @@ public class ReportesController {
 			
 		}catch(Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener getTicketByStore",e);
+		}
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
+	}
+	
+	/**API's que retorna datos estadisticos de los GASTOS*/
+	
+	@GetMapping(value="gastos/{attr}", produces = {"application/json"})
+	public ResponseEntity<?> getGastos (@PathVariable String attr) {
+		try {
+			if(repository.getGastos(attr).isEmpty()) {
+				return ResponseEntity.ok(new Mensaje("No existen registros de Gastos"));
+			}
+			
+			return ResponseEntity.ok(repository.getGastos(attr));
+		}catch(Exception e) {
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error en getGastos", e);
+		}
+		
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
+	}
+	
+	@GetMapping(value="gastos/{attr}/{store}", produces= {"application/json"})
+	public ResponseEntity<?> getGastosByStore(@PathVariable String attr,@PathVariable Integer store){
+		try {
+			if(!metricservice.getTicketByStore(attr, store).isEmpty()) {
+				return ResponseEntity.ok(repository.getGastosByStore(attr, store));
+			}else {
+				return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("No se encontro nada con ese Store_ID"));
+			}
+			
+		}catch(Exception e) {
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener getGastosByStore",e);
 		}
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
 	}
