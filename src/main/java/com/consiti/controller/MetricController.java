@@ -85,6 +85,14 @@ public class MetricController {
             if (result.hasErrors()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Campos requeridos"));
             }
+            if (metric.getMetric_id()!=null) {
+                if (repository.existsById(metric.getMetric_id())) {
+                    metric.setMetric_id(null);
+                    service.saveMetric(metric);
+
+                    return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Metrica creada"));
+                }
+            }
             service.saveMetric(metric);
 
             return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Metrica creada"));

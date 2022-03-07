@@ -47,4 +47,16 @@ public class Metric implements Serializable{
 
     @Column(name = "ATTR3", nullable = true, length = 30)
     private String attr3;
+
+    @Column(name = "LABEL1", nullable = true, length = 30)
+    private String label1;
+    
+    @Column(name = "LABEL2", nullable = true, length = 30)
+    private String label2;
+
+    @Column(name = "LABEL3", nullable = true, length = 30)
+    private String label3;
+
+    @Column(name = "LABEL4", nullable = true, length = 30)
+    private String label4;
 }
