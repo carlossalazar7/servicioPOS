@@ -1,5 +1,7 @@
 package com.consiti.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,11 +39,15 @@ public class ReportesController {
 	@GetMapping(value="avg-ticket/{attr}", produces = {"application/json"})
 	public ResponseEntity<?> getTickets (@PathVariable String attr) {
 		try {
-			
 			if(metricservice.getAvgTicket(attr).isEmpty()) {
+				
 				return ResponseEntity.ok(new Mensaje("No existen registros de ticket promedio"));
 			}
-			return ResponseEntity.ok(metricservice.getAvgTicket(attr));
+			
+			Map<String, Object> json = new HashMap<String, Object>();
+			json.put("discounts",repository.getTicket(attr));
+			json.put("labels",repository.getLabelsTicket(attr));
+			return ResponseEntity.ok(json);
 		}catch(Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error en getTickets", e);
 		}
@@ -53,9 +59,12 @@ public class ReportesController {
 	public ResponseEntity<?> getTicketByStore(@PathVariable String attr,@PathVariable Integer store){
 		try {
 			if(!metricservice.getTicketByStore(attr, store).isEmpty()) {
-				return ResponseEntity.ok(metricservice.getTicketByStore(attr, store));
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("discounts",metricservice.getTicketByStore(attr, store));
+				json.put("labels",repository.getLabelsTicket(attr));
+				return ResponseEntity.ok(json);
 			}else {
-				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Mensaje("No se encontro nada con ese Store_ID"));
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Mensaje("Busqueda con parametros period: '"+attr+"' y store: '"+store+"' sin resultados"));
 			}
 			
 		}catch(Exception e) {
@@ -70,10 +79,12 @@ public class ReportesController {
 	public ResponseEntity<?> getGastos (@PathVariable String attr) {
 		try {
 			if(repository.getGastos(attr).isEmpty()) {
-				return ResponseEntity.ok(new Mensaje("No existen registros de Gastos"));
+				return ResponseEntity.ok(new Mensaje("Busqueda con parametro period: '"+attr+"' sin resultados"));
 			}
-			
-			return ResponseEntity.ok(repository.getGastos(attr));
+			Map<String, Object> json = new HashMap<String, Object>();
+			json.put("discounts",repository.getGastos(attr));
+			json.put("labels",repository.getLabelsGastos(attr));
+			return ResponseEntity.ok(json);
 		}catch(Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error en getGastos", e);
 		}
@@ -84,10 +95,13 @@ public class ReportesController {
 	@GetMapping(value="gastos/{attr}/{store}", produces= {"application/json"})
 	public ResponseEntity<?> getGastosByStore(@PathVariable String attr,@PathVariable Integer store){
 		try {
-			if(!metricservice.getTicketByStore(attr, store).isEmpty()) {
-				return ResponseEntity.ok(repository.getGastosByStore(attr, store));
+			if(!repository.getGastosByStore(attr, store).isEmpty()) {
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("discounts",getGastosByStore(attr, store));
+				json.put("labels",repository.getLabelsGastos(attr));
+				return ResponseEntity.ok(json);
 			}else {
-				return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("No se encontro nada con ese Store_ID"));
+				return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Busqueda con parametros period: '"+attr+"' y store: '"+store+"' sin resultados"));
 			}
 			
 		}catch(Exception e) {
@@ -109,8 +123,10 @@ public class ReportesController {
 			if (repository.getVentasDiarias(period).isEmpty() || repository.getVentasDiarias(period) ==null ) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
 			}
-
-			return ResponseEntity.status(HttpStatus.OK).body(repository.getVentasDiarias(period));
+			Map<String, Object> json = new HashMap<String, Object>();
+			json.put("discounts",repository.getVentasDiarias(period));
+			json.put("labels",repository.getLabelsVentasDiarias(period));
+			return ResponseEntity.status(HttpStatus.OK).body(json);
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasDiarias()",e);
 		}
@@ -125,8 +141,10 @@ public class ReportesController {
 			if (repository.getVentasDiariasByStore(period, store).isEmpty() || repository.getVentasDiariasByStore(period, store) ==null ) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametros period: '"+period+"' y store: '"+store+"' sin resultados"));
 			}
-
-			return ResponseEntity.status(HttpStatus.OK).body(repository.getVentasDiariasByStore(period, store));
+			Map<String, Object> json = new HashMap<String, Object>();
+			json.put("discounts",repository.getVentasDiariasByStore(period,store));
+			json.put("labels",repository.getLabelsVentasDiarias(period));
+			return ResponseEntity.status(HttpStatus.OK).body(json);
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasDiarias()",e);
 		}
@@ -141,8 +159,10 @@ public class ReportesController {
 			if (repository.getUnidadesVendidas(period).isEmpty() || repository.getUnidadesVendidas(period) ==null ) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
 			}
-
-			return ResponseEntity.status(HttpStatus.OK).body(repository.getUnidadesVendidas(period));
+			Map<String, Object> json = new HashMap<String, Object>();
+			json.put("discounts",repository.getUnidadesVendidas(period));
+			json.put("labels",repository.getLabelsUnidadesVendidas(period));
+			return ResponseEntity.status(HttpStatus.OK).body(json);
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasDiarias()",e);
 		}
@@ -157,8 +177,10 @@ public class ReportesController {
 			if (repository.getUnidadesVendidasByStore(period, store).isEmpty() || repository.getUnidadesVendidasByStore(period, store) ==null ) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametros period: '"+period+"' y store: '"+store+"' sin resultados"));
 			}
-
-			return ResponseEntity.status(HttpStatus.OK).body(repository.getUnidadesVendidasByStore(period, store));
+			Map<String, Object> json = new HashMap<String, Object>();
+			json.put("discounts",repository.getUnidadesVendidasByStore(period,store));
+			json.put("labels",repository.getLabelsUnidadesVendidas(period));
+			return ResponseEntity.status(HttpStatus.OK).body(json);
 		} catch (Exception e) {
 			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasDiarias()",e);
 		}

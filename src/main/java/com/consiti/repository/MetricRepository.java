@@ -1,6 +1,7 @@
 package com.consiti.repository;
 
 import com.consiti.entity.Reportes;
+import com.consiti.entity.Labels;
 import com.consiti.entity.Metric;
 
 import java.util.List;
@@ -28,6 +29,13 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+ "GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE;", nativeQuery = true)
 	List<Reportes>  getTicket(String attr);
 	
+	@Query(value="SELECT C.LABEL1,C.LABEL2,C.LABEL3,C.LABEL4\r\n"
+			+ "FROM METRIC C\r\n"
+			+ "WHERE \r\n"
+			+ "C.NAME = 'AvgTicket'\r\n"
+			+ "AND C.type_code = 'TM'\r\n"
+			+ "AND ATTR1 =?1 ", nativeQuery = true)
+	Labels getLabelsTicket(String attr);
 	
 	@Query(value = "SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS 'KEY', AVG(A.VALUE) VALUE, C.VALUE KPI, AVG(A.VALUE)/C.VALUE PROGRESS \r\n"
 			+ "FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D\r\n"
@@ -59,6 +67,14 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
 			+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
 	public List<Reportes> getVentasDiarias(@Param("period") String period);
+	
+	@Query(value="SELECT C.LABEL1,C.LABEL2,C.LABEL3,C.LABEL4\r\n"
+			+ "FROM METRIC C\r\n"
+			+ "WHERE \r\n"
+			+ "C.NAME = 'VentaConIVA'\r\n"
+			+ "AND C.type_code = 'TM'\r\n"
+			+ "AND ATTR1 =?1 ", nativeQuery = true)
+		Labels getLabelsVentasDiarias(String attr);
 
 	@Query(value="SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS 'KEY', SUM(A.VALUE) VALUE, C.VALUE KPI, sum(A.VALUE)/C.VALUE PROGRESS" 
 			+" FROM ConsitiPOS.TRAN_HEAD A, ConsitiPOS.STORE_DAY B, ConsitiPOS.METRIC C, ConsitiPOS.STORE D"
@@ -92,6 +108,14 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 					+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
 	public List<Reportes> getUnidadesVendidas(@Param("period") String period);
 	
+	@Query(value="SELECT C.LABEL1,C.LABEL2,C.LABEL3,C.LABEL4\r\n"
+			+ "FROM METRIC C\r\n"
+			+ "WHERE \r\n"
+			+ "C.NAME = 'UnidadesVendidas'\r\n"
+			+ "AND C.type_code = 'TM'\r\n"
+			+ "AND ATTR1 =?1 ", nativeQuery = true)
+		Labels getLabelsUnidadesVendidas(String attr);
+	
 	@Query(value="SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS 'KEY', SUM(E.QTY) VALUE, C.VALUE KPI, AVG(A.VALUE)/C.VALUE PROGRESS" 
 					+" FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D, TRAN_ITEM E"
 					+" WHERE A.TRAN_TYPE IN ("
@@ -123,6 +147,15 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+ "AND D.STORE = A.STORE\r\n"
 			+ "GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE;",nativeQuery=true)
 	public List<Reportes> getGastos(String attr);
+
+	@Query(value="SELECT C.LABEL1,C.LABEL2,C.LABEL3,C.LABEL4\r\n"
+			+ "FROM METRIC C\r\n"
+			+ "WHERE \r\n"
+			+ "C.NAME = 'Gastos'\r\n"
+			+ "AND C.type_code = 'TM'\r\n"
+			+ "AND ATTR1 =?1 ", nativeQuery = true)
+		Labels getLabelsGastos(String attr);
+	
 	
 	@Query(value="SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS \"KEY\", \r\n"
 			+ "SUM(A.VALUE) VALUE, C.VALUE KPI, sum(A.VALUE)/C.VALUE PROGRESS \r\n"
