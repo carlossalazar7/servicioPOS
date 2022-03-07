@@ -187,4 +187,47 @@ public class ReportesController {
 		
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
 	}
+
+	@GetMapping(value="/anulaciones/{period}")
+	public ResponseEntity<?> anulaciones(@PathVariable("period") String period) {
+
+		try {
+			
+			if (repository.getAnulaciones(period).isEmpty() || repository.getAnulaciones(period)==null) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+			}
+
+			Map<String,Object> json = new HashMap<>();
+			json.put("discounts", repository.getAnulaciones(period));
+			json.put("labels", repository.getLabelsAnulaciones(period));
+
+			return ResponseEntity.status(HttpStatus.OK).body(json);
+		} catch (Exception e) {
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasDiarias()",e);
+		}
+
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
+	}
+
+	@GetMapping(value="/anulaciones/{period}/{store}")
+	public ResponseEntity<?> anulaciones(@PathVariable("period") String period, @PathVariable("store") Integer store) {
+
+		try {
+			
+			if (repository.getAnulacionesByStore(period, store).isEmpty() || repository.getAnulacionesByStore(period, store)==null) {
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametros period: '"+period+"' y store: '"+store+"' sin resultados"));
+			}
+
+			Map<String,Object> json = new HashMap<>();
+			json.put("discounts", repository.getAnulacionesByStore(period, store));
+			json.put("labels", repository.getLabelsAnulaciones(period));
+
+			return ResponseEntity.status(HttpStatus.OK).body(json);
+		} catch (Exception e) {
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasDiarias()",e);
+		}
+
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
+	}
+	
 }

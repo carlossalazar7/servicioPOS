@@ -63,6 +63,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+" AND C.NAME = 'VentaConIVA'"
 			+" AND C.type_code = 'TM'"
 			+" AND ATTR1 = :period"
+			+" and A.STATUS ='0'"
 			+" AND D.STORE = A.STORE"
 			+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
 			+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
@@ -87,6 +88,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+" AND C.type_code = 'TM'"
 			+" AND ATTR1 = :period"
 			+" AND A.STORE = :store"
+			+" and A.STATUS ='0'"
 			+" AND D.STORE = A.STORE"
 			+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
 			+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
@@ -173,4 +175,44 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+ "GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE;", nativeQuery=true)
 	public List<Reportes> getGastosByStore(String attr, Integer store);
     
+	@Query(value="SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS 'KEY', SUM(A.VALUE) VALUE, C.VALUE KPI, sum(A.VALUE)/C.VALUE PROGRESS" 
+			+" FROM ConsitiPOS.TRAN_HEAD A, ConsitiPOS.STORE_DAY B, ConsitiPOS.METRIC C, ConsitiPOS.STORE D"
+			+" WHERE A.TRAN_TYPE IN ("
+			+" SELECT TRAN_TYPE FROM TRAN_TYPES"
+			+" WHERE TYPE_CODE = 'SALE'"
+			+")"
+			+" AND B.STORE_DAY_SEQ_NO = A.STORE_DAY_SEQ_NO"
+			+" AND C.NAME = 'VentaConIVA'"
+			+" AND C.type_code = 'TM'"
+			+" AND ATTR1 = :period"
+			+" and A.STATUS ='1'"
+			+" AND D.STORE = A.STORE"
+			+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
+			+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
+	public List<Reportes> getAnulaciones(@Param("period") String period);
+	
+	@Query(value="SELECT C.LABEL1,C.LABEL2,C.LABEL3,C.LABEL4\r\n"
+			+ "FROM METRIC C\r\n"
+			+ "WHERE \r\n"
+			+ "C.NAME = 'VentaConIVA'\r\n"
+			+ "AND C.type_code = 'TM'\r\n"
+			+ "AND ATTR1 =?1 ", nativeQuery = true)
+		Labels getLabelsAnulaciones(String attr);
+
+	@Query(value="SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS 'KEY', SUM(A.VALUE) VALUE, C.VALUE KPI, sum(A.VALUE)/C.VALUE PROGRESS" 
+			+" FROM ConsitiPOS.TRAN_HEAD A, ConsitiPOS.STORE_DAY B, ConsitiPOS.METRIC C, ConsitiPOS.STORE D"
+			+" WHERE A.TRAN_TYPE IN ("
+			+" SELECT TRAN_TYPE FROM TRAN_TYPES"
+			+" WHERE TYPE_CODE = 'SALE'"
+			+")"
+			+" AND B.STORE_DAY_SEQ_NO = A.STORE_DAY_SEQ_NO"
+			+" AND C.NAME = 'VentaConIVA'"
+			+" AND C.type_code = 'TM'"
+			+" AND ATTR1 = :period"
+			+" AND A.STORE = :store"
+			+" and A.STATUS ='1'"
+			+" AND D.STORE = A.STORE"
+			+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
+			+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
+	public List<Reportes> getAnulacionesByStore(@Param("period") String period, @Param("store") Integer store);
 }
