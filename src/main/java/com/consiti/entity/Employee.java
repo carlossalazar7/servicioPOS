@@ -39,6 +39,12 @@ public class Employee implements Serializable {
     @Column(name = "EMP_TYPE", nullable = false, length = 20)
     private String emp_type;
 
+	@Column(name="USER_PASSWORD",nullable = false, length=255)
+	private String user_password;
 	
+	//@ManyToOne
+	//@JoinColumn(name="COMPANY_ID")
+	@Column(name="COMPANY_ID",nullable = false, length=10)
+	private Integer id_company;
     
 }
