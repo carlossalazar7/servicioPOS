@@ -102,6 +102,8 @@ public class EmployeeController {
 				employee.setSalesperson_ind(updatedEmployee.getSalesperson_ind());
 				employee.setCashier_ind(updatedEmployee.getCashier_ind());
 				employee.setEmp_type(updatedEmployee.getEmp_type());
+				employee.setUser_password(updatedEmployee.getUser_password());
+				employee.setId_company(updatedEmployee.getId_company());
 				employeeservice.save(employee);
 
 				return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Datos de usuario actualizados"));			
