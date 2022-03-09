@@ -17,6 +17,8 @@ import lombok.Data;
 @Table(name = "COMPANY")
 public class Company implements Serializable{
     
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COMPANY_ID", nullable = false, length = 10)

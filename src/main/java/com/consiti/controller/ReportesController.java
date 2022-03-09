@@ -45,7 +45,7 @@ public class ReportesController {
 			}
 			
 			Map<String, Object> json = new HashMap<String, Object>();
-			json.put("discounts",repository.getTicket(attr));
+			json.put("avg-ticket",repository.getTicket(attr));
 			json.put("labels",repository.getLabelsTicket(attr));
 			return ResponseEntity.ok(json);
 		}catch(Exception e) {
@@ -60,7 +60,7 @@ public class ReportesController {
 		try {
 			if(!metricservice.getTicketByStore(attr, store).isEmpty()) {
 				Map<String, Object> json = new HashMap<String, Object>();
-				json.put("discounts",metricservice.getTicketByStore(attr, store));
+				json.put("avg-ticket",metricservice.getTicketByStore(attr, store));
 				json.put("labels",repository.getLabelsTicket(attr));
 				return ResponseEntity.ok(json);
 			}else {
@@ -82,7 +82,7 @@ public class ReportesController {
 				return ResponseEntity.ok(new Mensaje("Busqueda con parametro period: '"+attr+"' sin resultados"));
 			}
 			Map<String, Object> json = new HashMap<String, Object>();
-			json.put("discounts",repository.getGastos(attr));
+			json.put("gastos",repository.getGastos(attr));
 			json.put("labels",repository.getLabelsGastos(attr));
 			return ResponseEntity.ok(json);
 		}catch(Exception e) {
@@ -97,7 +97,7 @@ public class ReportesController {
 		try {
 			if(!repository.getGastosByStore(attr, store).isEmpty()) {
 				Map<String, Object> json = new HashMap<String, Object>();
-				json.put("discounts",getGastosByStore(attr, store));
+				json.put("gastos",getGastosByStore(attr, store));
 				json.put("labels",repository.getLabelsGastos(attr));
 				return ResponseEntity.ok(json);
 			}else {
@@ -124,7 +124,7 @@ public class ReportesController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
 			}
 			Map<String, Object> json = new HashMap<String, Object>();
-			json.put("discounts",repository.getVentasDiarias(period));
+			json.put("ventas",repository.getVentasDiarias(period));
 			json.put("labels",repository.getLabelsVentasDiarias(period));
 			return ResponseEntity.status(HttpStatus.OK).body(json);
 		} catch (Exception e) {
@@ -142,7 +142,7 @@ public class ReportesController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametros period: '"+period+"' y store: '"+store+"' sin resultados"));
 			}
 			Map<String, Object> json = new HashMap<String, Object>();
-			json.put("discounts",repository.getVentasDiariasByStore(period,store));
+			json.put("ventas",repository.getVentasDiariasByStore(period,store));
 			json.put("labels",repository.getLabelsVentasDiarias(period));
 			return ResponseEntity.status(HttpStatus.OK).body(json);
 		} catch (Exception e) {
@@ -160,7 +160,7 @@ public class ReportesController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
 			}
 			Map<String, Object> json = new HashMap<String, Object>();
-			json.put("discounts",repository.getUnidadesVendidas(period));
+			json.put("unidades-vendidas",repository.getUnidadesVendidas(period));
 			json.put("labels",repository.getLabelsUnidadesVendidas(period));
 			return ResponseEntity.status(HttpStatus.OK).body(json);
 		} catch (Exception e) {
@@ -178,7 +178,7 @@ public class ReportesController {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametros period: '"+period+"' y store: '"+store+"' sin resultados"));
 			}
 			Map<String, Object> json = new HashMap<String, Object>();
-			json.put("discounts",repository.getUnidadesVendidasByStore(period,store));
+			json.put("unidades-vendidas",repository.getUnidadesVendidasByStore(period,store));
 			json.put("labels",repository.getLabelsUnidadesVendidas(period));
 			return ResponseEntity.status(HttpStatus.OK).body(json);
 		} catch (Exception e) {
@@ -198,7 +198,7 @@ public class ReportesController {
 			}
 
 			Map<String,Object> json = new HashMap<>();
-			json.put("discounts", repository.getAnulaciones(period));
+			json.put("anulaciones", repository.getAnulaciones(period));
 			json.put("labels", repository.getLabelsAnulaciones(period));
 
 			return ResponseEntity.status(HttpStatus.OK).body(json);
@@ -219,7 +219,7 @@ public class ReportesController {
 			}
 
 			Map<String,Object> json = new HashMap<>();
-			json.put("discounts", repository.getAnulacionesByStore(period, store));
+			json.put("anulaciones", repository.getAnulacionesByStore(period, store));
 			json.put("labels", repository.getLabelsAnulaciones(period));
 
 			return ResponseEntity.status(HttpStatus.OK).body(json);
