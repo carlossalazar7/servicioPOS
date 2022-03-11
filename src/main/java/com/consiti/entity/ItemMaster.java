@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 import lombok.Data;
 
@@ -32,11 +33,11 @@ public class ItemMaster implements Serializable {
     @Column(name = "ITEM_AGGREGATE_IND", nullable = false, length = 1)
     private String itemAggregateInd;
 
-    
+    @Positive
     @Column(name = "TRAN_LEVEL", nullable = false)
     private Integer tranLevel;
 
-    
+    @Positive
     @Column(name = "ITEM_LEVEL", nullable = false)
     private Integer itemLevel;
 
@@ -50,6 +51,7 @@ public class ItemMaster implements Serializable {
     @Column(name = "ITEM_PARENT", length = 25)
     private String itemParent;
 
+    @Positive
     @Column(name = "PREFIX")
     private Integer prefix;    
 
@@ -168,9 +170,11 @@ public class ItemMaster implements Serializable {
     @Column(name = "CONST_DIMEN_IND", nullable = false, length = 1)
     private String constDimenInd;
 
+    @Positive
     @Column(name = "DEFAULT_WASTE_PCT")
     private Integer defaultWastePct;
 
+    @Positive
     @Column(name = "WASTE_PCT")
     private Integer wastePct;    
 
@@ -187,15 +191,18 @@ public class ItemMaster implements Serializable {
     @Column(name = "HANDLING_TEMP", length = 6)
     private String handlingTemp;
 
+    @Positive
     @Column(name = "RETAIL_LABEL_VALUE")
     private Integer retailLabelValue;    
 
     @Column(name = "RETAIL_LABEL_TYPE", length = 6)
     private String retailLabelType;
 
+    @Positive
     @Column(name = "MFG_REC_RETAIL")
     private Integer mfgRecRetail;
 
+    @Positive
     @Column(name = "ORIGINAL_RETAIL")
     private Integer originalRetail;
 
@@ -214,9 +221,11 @@ public class ItemMaster implements Serializable {
     @Column(name = "PACKAGE_UOM", length = 4)
     private String packageUom;
 
+    @Positive
     @Column(name = "PACKAGE_SIZE")
     private Integer packageSize;
 
+    @Positive
     @Column(name = "UOM_CONV_FACTOR")
     private Integer uomConvFactor;
    
@@ -225,9 +234,11 @@ public class ItemMaster implements Serializable {
     @Column(name = "STANDARD_UOM", nullable = false, length = 4)
     private String standardUom;
     
+    @Positive
     @Column(name = "COST_ZONE_GROUP_ID")
     private Integer costZoneGroupId;
 
+    @Positive
     @Column(name = "RETAIL_ZONE_GROUP_ID")
     private Integer retailZoneGroupId;
 
@@ -271,6 +282,7 @@ public class ItemMaster implements Serializable {
 
     
     @NotNull
+    @Positive
     @Column(name = "DEPT", nullable = false)
     private Integer dept;
 

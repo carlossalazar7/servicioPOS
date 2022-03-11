@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,17 +56,14 @@ public class EmployeeController {
 	
 
 	@PostMapping(value="/", produces=  {"application/json"})
-	public ResponseEntity<?> createEmployee(@RequestBody Employee employee,BindingResult result, Model map) {
+	public ResponseEntity<?> createEmployee(@Valid @RequestBody Employee employee,BindingResult result, Model map) {
 
-		if(employeeservice.errorEmail(employee.getEmail())) {
-			
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Inserte un correo valido");
+		if (result.hasErrors()) {
+
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Campos requeridos "+result.getFieldError().getField()+" "+result.getFieldError().getDefaultMessage()));
 		}
 		
 		try {
-			if (employeeservice.errorEmail(employee.getEmail())) {
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Inserte un correo valido"));
-			}
 			boolean existe = repository.existsById(employee.getEmp_id());
 			if (existe) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("El id "+employee.getEmp_id()+" ya está asociado a otro empleado"));
@@ -82,10 +80,10 @@ public class EmployeeController {
 	
 
 	@PutMapping(value="/{id}")
-	public ResponseEntity<?> updateEmployee(@PathVariable("id") String id,@RequestBody Employee updatedEmployee) {
-		if (employeeservice.errorEmail(updatedEmployee.getEmail())) {
+	public ResponseEntity<?> updateEmployee(@PathVariable("id") String id,@Valid @RequestBody Employee updatedEmployee, BindingResult result) {
+		if (result.hasErrors()) {
 
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Inserte un correo valido");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Campos requeridos "+result.getFieldError().getField()+" "+result.getFieldError().getDefaultMessage()));
 		}
 		
 		try {

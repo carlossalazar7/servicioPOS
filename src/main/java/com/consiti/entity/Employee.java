@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Positive;
 
 import java.io.Serializable;
 
@@ -44,6 +45,7 @@ public class Employee implements Serializable {
 	
 	//@ManyToOne
 	//@JoinColumn(name="COMPANY_ID")
+    @Positive
 	@Column(name="COMPANY_ID",nullable = false, length=10)
 	private Integer id_company;
     
