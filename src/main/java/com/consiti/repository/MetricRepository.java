@@ -222,12 +222,12 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+" AND B.STORE_DAY_SEQ_NO = A.STORE_DAY_SEQ_NO"
 				+" AND C.NAME = 'VentasPorVendedor'"
 				+" AND C.type_code = 'TM'"
-				+" AND ATTR1 = 'DAILY'"
+				+" AND ATTR1 = :period"
 				+" AND A.STORE = :store"
 				+" AND D.STORE = A.STORE"
 				+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
 				+" GROUP BY A.CASHIER, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
-	public List<Reportes> getVentasPorVendedor(@Param("store") Integer store);
+	public List<Reportes> getVentasVendedorByStore(@Param("period") String period, @Param("store") Integer store);
 
 	@Query(value="SELECT C.LABEL1,C.LABEL2,C.LABEL3,C.LABEL4\r\n"
 			+ "FROM METRIC C\r\n"
@@ -236,4 +236,16 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+ "AND C.type_code = 'TM'\r\n"
 			+ "AND ATTR1 ='DAILY'", nativeQuery = true)
 		Labels getLabelsVentasByVendedor();
+
+				@Query(value="SELECT A.CASHIER ENTITY, B.BUSINESS_DATE AS 'KEY', SUM(A.VALUE) VALUE, C.VALUE KPI, sum(A.VALUE)/C.VALUE PROGRESS"
+				+" FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D"
+				+" WHERE A.TRAN_TYPE = 'Recibo'"
+				+" AND B.STORE_DAY_SEQ_NO = A.STORE_DAY_SEQ_NO"
+				+" AND C.NAME = 'VentasPorVendedor'"
+				+" AND C.type_code = 'TM'"
+				+" AND ATTR1 = :period"
+				+" AND D.STORE = A.STORE"
+				+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
+				+" GROUP BY A.CASHIER, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
+		public List<Reportes> getVentasPorVendedor(@Param("period") String period);
 }
