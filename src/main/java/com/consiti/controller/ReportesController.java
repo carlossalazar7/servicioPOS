@@ -34,7 +34,7 @@ public class ReportesController {
 	
 
 	/**API's que retorna datos estadisticos de los AVGTICKET*/
-	@GetMapping(value="avg-ticket/{attr}", produces = {"application/json"})
+	@GetMapping(value="avg-ticket/{period}", produces = {"application/json"})
 	public ResponseEntity<?> getTickets (@PathVariable String period) {
 		try {
 			
@@ -70,7 +70,7 @@ public class ReportesController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
 	}
 	
-	@GetMapping(value="avg-ticket/{attr}/{store}", produces= {"application/json"})
+	@GetMapping(value="avg-ticket/{period}/{store}", produces= {"application/json"})
 	public ResponseEntity<?> getTicketByStore(@PathVariable String period,@PathVariable Integer store){
 		try {
 			if (period.equals("DAILY")) {
@@ -78,7 +78,7 @@ public class ReportesController {
 					return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Busqueda con parametros period: '"+period+"' y store: '"+store+"' sin resultados"));
 				}
 				Map<String, Object> json = new HashMap<String, Object>();
-				json.put("ventas",repository.getTicketByStore(period,store));
+				json.put("avg-ticket",repository.getTicketByStore(period,store));
 				json.put("labels",repository.getLabelsTicket(period));
 				return ResponseEntity.status(HttpStatus.OK).body(json);
 			}if(period.equals("WEEKLY")){
@@ -86,7 +86,7 @@ public class ReportesController {
 					return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Busqueda con parametros period: '"+period+"' y store: '"+store+"' sin resultados"));
 				}
 				Map<String, Object> json = new HashMap<String, Object>();
-				json.put("ventas",repository.getTicketSemanalByStore(period,store));
+				json.put("avg-ticket",repository.getTicketSemanalByStore(period,store));
 				json.put("labels",repository.getLabelsTicketSemanal(period));
 				return ResponseEntity.status(HttpStatus.OK).body(json);
 			}if(period.equals("MONTHLY")){
@@ -94,7 +94,7 @@ public class ReportesController {
 					return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Busqueda con parametros period: '"+period+"' y store: '"+store+"' sin resultados"));
 				}
 				Map<String, Object> json = new HashMap<String, Object>();
-				json.put("ventas",repository.getTicketMensualByStore(period,store));
+				json.put("avg-ticket",repository.getTicketMensualByStore(period,store));
 				json.put("labels",repository.getLabelsTicketMensual(period));
 				return ResponseEntity.status(HttpStatus.OK).body(json);
 			}
@@ -108,7 +108,7 @@ public class ReportesController {
 	
 	/**API's que retorna datos estadisticos de los GASTOS*/
 	
-	@GetMapping(value="gastos/{attr}", produces = {"application/json"})
+	@GetMapping(value="gastos/{period}", produces = {"application/json"})
 	public ResponseEntity<?> getGastos (@PathVariable String period) {
 		try {
 			if (period.equals("DAILY")) {
@@ -116,7 +116,7 @@ public class ReportesController {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
 				}
 				Map<String, Object> json = new HashMap<String, Object>();
-				json.put("ventas",repository.getGastos(period));
+				json.put("gastos",repository.getGastos(period));
 				json.put("labels",repository.getLabelsGastos(period));
 				return ResponseEntity.status(HttpStatus.OK).body(json);
 			}if(period.equals("WEEKLY")){
@@ -124,7 +124,7 @@ public class ReportesController {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
 				}
 				Map<String, Object> json = new HashMap<String, Object>();
-				json.put("ventas",repository.getGastosSemanales(period));
+				json.put("gastos",repository.getGastosSemanales(period));
 				json.put("labels",repository.getLabelsGastosSemanales(period));
 				return ResponseEntity.status(HttpStatus.OK).body(json);
 			}if(period.equals("MONTHLY")){
@@ -132,7 +132,7 @@ public class ReportesController {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
 				}
 				Map<String, Object> json = new HashMap<String, Object>();
-				json.put("ventas",repository.getGastosMensuales(period));
+				json.put("gastos",repository.getGastosMensuales(period));
 				json.put("labels",repository.getLabelsGastosMensuales(period));
 				return ResponseEntity.status(HttpStatus.OK).body(json);
 			}
@@ -143,7 +143,7 @@ public class ReportesController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
 	}
 	
-	@GetMapping(value="gastos/{attr}/{store}", produces= {"application/json"})
+	@GetMapping(value="gastos/{period}/{store}", produces= {"application/json"})
 	public ResponseEntity<?> getGastosByStore(@PathVariable String period,@PathVariable Integer store){
 		try {
 			if (period.equals("DAILY")) {
@@ -151,7 +151,7 @@ public class ReportesController {
 					return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Busqueda con parametros period: '"+period+"' y store: '"+store+"' sin resultados"));
 				}
 				Map<String, Object> json = new HashMap<String, Object>();
-				json.put("ventas",repository.getGastosByStore(period,store));
+				json.put("gastos",repository.getGastosByStore(period,store));
 				json.put("labels",repository.getLabelsGastos(period));
 				return ResponseEntity.status(HttpStatus.OK).body(json);
 			}if(period.equals("WEEKLY")){
@@ -159,7 +159,7 @@ public class ReportesController {
 					return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Busqueda con parametros period: '"+period+"' y store: '"+store+"' sin resultados"));
 				}
 				Map<String, Object> json = new HashMap<String, Object>();
-				json.put("ventas",repository.getGastosSemanalesByStore(period,store));
+				json.put("gastos",repository.getGastosSemanalesByStore(period,store));
 				json.put("labels",repository.getLabelsGastosSemanales(period));
 				return ResponseEntity.status(HttpStatus.OK).body(json);
 			}if(period.equals("MONTHLY")){
@@ -167,7 +167,7 @@ public class ReportesController {
 					return ResponseEntity.status(HttpStatus.OK).body(new Mensaje("Busqueda con parametros period: '"+period+"' y store: '"+store+"' sin resultados"));
 				}
 				Map<String, Object> json = new HashMap<String, Object>();
-				json.put("ventas",repository.getGastosMensualesByStore(period,store));
+				json.put("gastos",repository.getGastosMensualesByStore(period,store));
 				json.put("labels",repository.getLabelsGastosMensuales(period));
 				return ResponseEntity.status(HttpStatus.OK).body(json);
 			}
