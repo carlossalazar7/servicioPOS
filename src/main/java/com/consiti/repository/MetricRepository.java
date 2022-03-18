@@ -26,9 +26,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+ "AND C.type_code = 'TM'\r\n"
 			+ "AND ATTR1 = ?1 #Parametro Period\r\n"
 			+ "AND D.STORE = A.STORE\r\n"
-			+ "AND STATUS = 'P'\r\n"
+			+ "AND STATUS = '0'\r\n"
 			+ "GROUP BY D.STORE_NAME, YEARWEEK(B.BUSINESS_DATE), C.VALUE\r\n"
-			+ "ORDER BY 2;\r\n"
+			+ "ORDER BY 2 desc;\r\n"
 			+ "", nativeQuery = true)
 	List<Reportes>  getTicketSemanal(String attr);
 	
@@ -53,9 +53,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+ "AND ATTR1 = ?1 #Parametro Period\r\n"
 			+ "AND A.STORE = ?2 #Parametro Store\r\n"
 			+ "AND D.STORE = A.STORE\r\n"
-			+ "AND STATUS = 'P'\r\n"
+			+ "AND STATUS = '0'\r\n"
 			+ "GROUP BY D.STORE_NAME, YEARWEEK(B.BUSINESS_DATE), C.VALUE\r\n"
-			+ "ORDER BY 2;\r\n"
+			+ "ORDER BY 2 desc;\r\n"
 			+ "", nativeQuery = true)
 	List<Reportes>  getTicketSemanalByStore(String attr, Integer store);
 	
@@ -71,9 +71,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+ "AND C.type_code = 'TM'\r\n"
 			+ "AND ATTR1 = ?1 #Parametro Period\r\n"
 			+ "AND D.STORE = A.STORE\r\n"
-			+ "AND STATUS = 'P'\r\n"
+			+ "AND STATUS = '0'\r\n"
 			+ "GROUP BY D.STORE_NAME, MONTH(B.BUSINESS_DATE), C.VALUE\r\n"
-			+ "ORDER BY 2;", nativeQuery = true)
+			+ "ORDER BY 2 desc;", nativeQuery = true)
 	List<Reportes> getTicketMensual(String attr);
 	
 	@Query(value = "SELECT D.STORE_NAME ENTITY, MONTH(B.BUSINESS_DATE) AS \"KEY\", \r\n"
@@ -89,9 +89,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+ "AND ATTR1 = ?1 #Parametro Period\r\n"
 			+ "AND A.STORE = ?2 #Parametro Store\r\n"
 			+ "AND D.STORE = A.STORE\r\n"
-			+ "AND STATUS = 'P'\r\n"
+			+ "AND STATUS = '0'\r\n"
 			+ "GROUP BY D.STORE_NAME, MONTH(B.BUSINESS_DATE), C.VALUE\r\n"
-			+ "ORDER BY 2;", nativeQuery = true)
+			+ "ORDER BY 2 desc;", nativeQuery = true)
 	List<Reportes> getTicketMensualByStore(String attr, Integer store);
 	
 	@Query(value="SELECT C.LABEL1,C.LABEL2,C.LABEL3,C.LABEL4\r\n"
@@ -114,7 +114,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+ "AND ATTR1 = ?1 #Parametro Period\r\n"
 				+ "AND D.STORE = A.STORE\r\n"
 				+ "AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()\r\n"
-				+ "GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE;", nativeQuery = true)
+				+ "GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE order by 2 desc;", nativeQuery = true)
 		List<Reportes>  getTicket(String attr);
 		
 		@Query(value="SELECT C.LABEL1,C.LABEL2,C.LABEL3,C.LABEL4\r\n"
@@ -138,7 +138,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+ "AND A.STORE = ?2 #Parametro Store\r\n"
 				+ "AND D.STORE = A.STORE\r\n"
 				+ "AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()\r\n"
-				+ "GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE;", nativeQuery = true)
+				+ "GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE order by 2 desc;", nativeQuery = true)
 		List<Reportes>  getTicketByStore(String attr, Integer store);
 /********************************************************************************************************************************************** */	
 	@Query(value="SELECT D.STORE_NAME ENTITY, B.BUSINESS_DATE AS 'KEY', SUM(A.VALUE) VALUE, C.VALUE KPI, sum(A.VALUE)/C.VALUE PROGRESS" 
@@ -151,10 +151,10 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+" AND C.NAME = 'VentaConIVA'"
 			+" AND C.type_code = 'TM'"
 			+" AND ATTR1 = :period"
-			+" and A.STATUS ='P'"
+			+" and A.STATUS ='0'"
 			+" AND D.STORE = A.STORE"
 			+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
-			+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
+			+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE order by 2 desc", nativeQuery = true)
 	public List<Reportes> getVentasDiarias(@Param("period") String period);
 	
 	@Query(value="SELECT C.LABEL1,C.LABEL2,C.LABEL3,C.LABEL4\r\n"
@@ -176,10 +176,10 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+" AND C.type_code = 'TM'"
 			+" AND ATTR1 = :period"
 			+" AND A.STORE = :store"
-			+" and A.STATUS ='P'"
+			+" and A.STATUS ='0'"
 			+" AND D.STORE = A.STORE"
 			+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
-			+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
+			+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE order by 2 desc", nativeQuery = true)
 	public List<Reportes> getVentasDiariasByStore(@Param("period") String period, @Param("store") Integer store);
 
 	/***********************************************************************************************************************************************************/
@@ -195,9 +195,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+" AND C.type_code = 'TM'"
 				+" AND ATTR1 = :period"
 				+" AND D.STORE = A.STORE"
-				+" AND STATUS = 'P'"
+				+" AND STATUS = '0'"
 				+" GROUP BY D.STORE_NAME, YEARWEEK(B.BUSINESS_DATE), C.VALUE"
-				+" ORDER BY 2"
+				+" ORDER BY 2 desc"
 				, nativeQuery = true)
 	public List<Reportes> getVentasSemanales(@Param("period") String period);
 
@@ -222,9 +222,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+" AND ATTR1 = :period"
 				+" AND A.STORE = :store"
 				+" AND D.STORE = A.STORE"
-				+" AND STATUS = 'P'"
+				+" AND STATUS = '0'"
 				+" GROUP BY D.STORE_NAME, YEARWEEK(B.BUSINESS_DATE), C.VALUE"
-				+" ORDER BY 2"
+				+" ORDER BY 2 desc"
 				, nativeQuery = true)
 	public List<Reportes> getVentasSemanalesByStore(@Param("period") String period,@Param("store") Integer store);
 
@@ -240,9 +240,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 					+" AND C.type_code = 'TM'"
 					+" AND ATTR1 = :period"
 					+" AND D.STORE = A.STORE"
-					+" AND STATUS = 'P'"
+					+" AND STATUS = '0'"
 					+" GROUP BY D.STORE_NAME, MONTH(B.BUSINESS_DATE), C.VALUE"
-					+" ORDER BY 2;", nativeQuery = true)
+					+" ORDER BY 2 desc;", nativeQuery = true)
 	public List<Reportes> getVentasMensuales(@Param("period") String period);
 
 	@Query(value="SELECT C.LABEL1,C.LABEL2,C.LABEL3,C.LABEL4\r\n"
@@ -266,9 +266,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+" AND ATTR1 = :period"
 				+" AND A.STORE = :store"
 				+" AND D.STORE = A.STORE"
-				+" AND STATUS = 'P'"
+				+" AND STATUS = '0'"
 				+" GROUP BY D.STORE_NAME, MONTH(B.BUSINESS_DATE), C.VALUE"
-				+" ORDER BY 2", nativeQuery = true)
+				+" ORDER BY 2 desc", nativeQuery = true)
 	public List<Reportes> getVentasMensualesByStore(@Param("period") String period,@Param("store") Integer store);
 
 	// @Query(value = "", nativeQuery = true)
@@ -292,7 +292,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 					+" AND D.STORE = A.STORE"
 					+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
 					+" AND E.TRAN_SEQ_NO = A.TRAN_SEQ_NO"
-					+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
+					+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE order by 2 desc", nativeQuery = true)
 	public List<Reportes> getUnidadesVendidas(@Param("period") String period);
 	
 	@Query(value="SELECT C.LABEL1,C.LABEL2,C.LABEL3,C.LABEL4\r\n"
@@ -317,12 +317,12 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 					+" AND D.STORE = A.STORE"
 					+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
 					+" AND E.TRAN_SEQ_NO = A.TRAN_SEQ_NO"
-					+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
+					+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE order by 2 desc", nativeQuery = true)
 	public List<Reportes> getUnidadesVendidasByStore(@Param("period") String period, @Param("store") Integer store);
 
 /***********************************************************************************************************************************************************/
 /***********************************************************************************************************************************************************/
-	@Query(value="SELECT D.STORE_NAME ENTITY, YEARWEEK(B.BUSINESS_DATE) AS 'KEY', SUM(A.VALUE) VALUE, C.VALUE KPI, SUM(A.VALUE)/C.VALUE PROGRESS"
+	@Query(value="SELECT D.STORE_NAME ENTITY, YEARWEEK(B.BUSINESS_DATE) AS 'KEY', SUM(A.VALUE) VALUE, C.VALUE KPI, AVG(A.VALUE)/C.VALUE PROGRESS"
 				+" FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D"
 				+" WHERE A.TRAN_TYPE IN ("
 				+" SELECT TRAN_TYPE FROM TRAN_TYPES"
@@ -332,11 +332,11 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+" AND C.NAME = 'UnidadesVendidas'"
 				+" AND C.type_code = 'TM'"
 				+" AND ATTR1 = :period"
-				+" and A.STATUS ='P'"
+				+" and A.STATUS ='0'"
 				+" AND D.STORE = A.STORE"
 				+" AND B.BUSINESS_DATE BETWEEN yearweek(DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY)) AND YEARWEEK(SYSDATE()) "
 				+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE"
-				+" order by 2;"
+				+" order by 2 desc;"
 				, nativeQuery = true)
 	public List<Reportes> getUnidadesVendidasSemanales(@Param("period") String period);
 
@@ -348,7 +348,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+ "AND ATTR1 =?1 ", nativeQuery = true)
 		Labels getLabelsUnidadesVendidasSemanales(String attr);
 
-	@Query(value="SELECT D.STORE_NAME ENTITY, YEARWEEK(B.BUSINESS_DATE) AS 'KEY', SUM(A.VALUE) VALUE, C.VALUE KPI, SUM(A.VALUE)/C.VALUE PROGRESS"
+	@Query(value="SELECT D.STORE_NAME ENTITY, YEARWEEK(B.BUSINESS_DATE) AS 'KEY', SUM(A.VALUE) VALUE, C.VALUE KPI, AVG(A.VALUE)/C.VALUE PROGRESS"
 				+" FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D"
 				+" WHERE A.TRAN_TYPE IN ("
 				+" SELECT TRAN_TYPE FROM TRAN_TYPES"
@@ -359,16 +359,16 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+" AND C.type_code = 'TM'"
 				+" AND ATTR1 = :period"
 				+" AND A.STORE = :store"
-				+" and A.STATUS ='P'"
+				+" and A.STATUS ='0'"
 				+" AND D.STORE = A.STORE"
 				+" AND B.BUSINESS_DATE BETWEEN yearweek(DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY)) AND YEARWEEK(SYSDATE()) "
 				+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE"
-				+" order by 2;"
+				+" order by 2 desc;"
 				, nativeQuery = true)
 	public List<Reportes> getUnidadesVendidasSemanalesByStore(@Param("period") String period, @Param("store") Integer store);
 
 	@Query(value=" SELECT D.STORE_NAME ENTITY, MONTH(B.BUSINESS_DATE) AS 'KEY'," 
-				+" SUM(A.VALUE) VALUE, C.VALUE KPI, sum(A.VALUE)/C.VALUE PROGRESS"
+				+" SUM(A.VALUE) VALUE, C.VALUE KPI, AVG(A.VALUE)/C.VALUE PROGRESS"
 				+" FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D"
 				+" WHERE A.TRAN_TYPE IN ("
 				+" SELECT TRAN_TYPE FROM TRAN_TYPES"
@@ -379,9 +379,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+" AND C.type_code = 'TM'"
 				+" AND ATTR1 = :period"
 				+" AND D.STORE = A.STORE"
-				+" AND STATUS = 'P'"
+				+" AND STATUS = '0'"
 				+" GROUP BY D.STORE_NAME, MONTH(B.BUSINESS_DATE), C.VALUE"
-				+" ORDER BY 2"
+				+" ORDER BY 2 desc"
 				, nativeQuery = true)
 	public List<Reportes> getUnidadesVendidasMensuales(@Param("period") String period);
 
@@ -394,7 +394,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 		Labels getLabelsUnidadesVendidasMensuales(String attr);
 
 	@Query(value="SELECT D.STORE_NAME ENTITY, MONTH(B.BUSINESS_DATE) AS 'KEY'," 
-				+" SUM(A.VALUE) VALUE, C.VALUE KPI, sum(A.VALUE)/C.VALUE PROGRESS"
+				+" SUM(A.VALUE) VALUE, C.VALUE KPI, AVG(A.VALUE)/C.VALUE PROGRESS"
 				+" FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D"
 				+" WHERE A.TRAN_TYPE IN ("
 				+" SELECT TRAN_TYPE FROM TRAN_TYPES"
@@ -406,9 +406,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+" AND ATTR1 = :period"
 				+" AND A.STORE = :store"
 				+" AND D.STORE = A.STORE"
-				+" AND STATUS = 'P'"
+				+" AND STATUS = '0'"
 				+" GROUP BY D.STORE_NAME, MONTH(B.BUSINESS_DATE), C.VALUE"
-				+" ORDER BY 2"
+				+" ORDER BY 2 desc"
 				, nativeQuery = true)
 	public List<Reportes> getUnidadesVendidasMensualesByStore(@Param("period") String period, @Param("store") Integer store);
 /***********************************************************************************************************************************************************/
@@ -425,7 +425,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+ "AND C.type_code = 'TM'\r\n"
 			+ "AND ATTR1 = ?1 #Parametro Period\r\n"
 			+ "AND D.STORE = A.STORE\r\n"
-			+ "GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE;",nativeQuery=true)
+			+ "GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE order by 2 desc;",nativeQuery=true)
 	public List<Reportes> getGastos(String attr);
 
 	@Query(value="SELECT C.LABEL1,C.LABEL2,C.LABEL3,C.LABEL4\r\n"
@@ -450,7 +450,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+ "AND ATTR1 = ?1 #Parametro Period\r\n"
 			+ "AND A.STORE = ?2 #Parametro Store\r\n"
 			+ "AND D.STORE = A.STORE\r\n"
-			+ "GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE;", nativeQuery=true)
+			+ "GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE order by 2 desc;", nativeQuery=true)
 	public List<Reportes> getGastosByStore(String attr, Integer store);
 	
 	
@@ -466,9 +466,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+ "AND C.type_code = 'TM'\r\n"
 			+ "AND ATTR1 = ?1 #Parametro Period\r\n"
 			+ "AND D.STORE = A.STORE\r\n"
-			+ "AND STATUS = 'P'\r\n"
+			+ "AND STATUS = '0'\r\n"
 			+ "GROUP BY D.STORE_NAME, YEARWEEK(B.BUSINESS_DATE), C.VALUE\r\n"
-			+ "ORDER BY 2;\r\n"
+			+ "ORDER BY 2 desc;\r\n"
 			+ "", nativeQuery = true)
 	public List<Reportes> getGastosSemanales(String attr);
 	
@@ -485,9 +485,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+ "AND ATTR1 = ?1 #Parametro Period\r\n"
 			+ "AND A.STORE = ?2 #Parametro Store\r\n"
 			+ "AND D.STORE = A.STORE\r\n"
-			+ "AND STATUS = 'P'\r\n"
+			+ "AND STATUS = '0'\r\n"
 			+ "GROUP BY D.STORE_NAME, YEARWEEK(B.BUSINESS_DATE), C.VALUE\r\n"
-			+ "ORDER BY 2;\r\n"
+			+ "ORDER BY 2 desc;\r\n"
 			+ "", nativeQuery = true)
 	public List<Reportes> getGastosSemanalesByStore(String attr, Integer store);
 	
@@ -512,9 +512,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+" AND C.type_code = 'TM'"
 			+" AND ATTR1 = ?1"
 			+" AND D.STORE = A.STORE"
-			+" AND STATUS = 'P'"
+			+" AND STATUS = '0'"
 			+" GROUP BY D.STORE_NAME, MONTH(B.BUSINESS_DATE), C.VALUE"
-			+" ORDER BY 2"
+			+" ORDER BY 2 desc"
 			, nativeQuery = true)
 	public List<Reportes> getGastosMensuales(String attr);
 	
@@ -531,9 +531,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+" AND ATTR1 = ?1"
 			+" AND A.STORE = ?2"
 			+" AND D.STORE = A.STORE"
-			+" AND STATUS = 'P'"
+			+" AND STATUS = '0'"
 			+" GROUP BY D.STORE_NAME, MONTH(B.BUSINESS_DATE), C.VALUE"
-			+" ORDER BY 2"
+			+" ORDER BY 2 desc"
 			, nativeQuery = true)
 	public List<Reportes> getGastosMensualesByStore(String attr, Integer store);
 	
@@ -557,11 +557,11 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+" AND C.NAME = 'VentaConIVA'"
 			+" AND C.type_code = 'TM'"
 			+" AND ATTR1 = :period"
-			+" and A.STATUS ='P'"
+			+" and A.STATUS ='1'"
 			+" AND D.STORE = A.STORE"
 			+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
 			+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE"
-			+" order by 2;"
+			+" order by 2 desc;"
 			, nativeQuery = true)
 	public List<Reportes> getAnulaciones(@Param("period") String period);
 	
@@ -584,11 +584,11 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+" AND C.type_code = 'TM'"
 			+" AND ATTR1 = :period"
 			+" AND A.STORE = :store"
-			+" and A.STATUS ='P'"
+			+" and A.STATUS ='1'"
 			+" AND D.STORE = A.STORE"
 			+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
 			+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE"
-			+" order by 2;"
+			+" order by 2 desc;"
 			, nativeQuery = true)
 	public List<Reportes> getAnulacionesByStore(@Param("period") String period, @Param("store") Integer store);
 /************************************************************************************************************************************************** */
@@ -607,7 +607,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+" AND D.STORE = A.STORE"
 				+" AND B.BUSINESS_DATE BETWEEN yearweek(DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY)) AND YEARWEEK(SYSDATE()) "
 				+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE"
-				+" order by 2;"
+				+" order by 2 desc;"
 	, nativeQuery = true)
 	public List<Reportes> getAnulacionesSemanales(@Param("period") String period);
 
@@ -634,7 +634,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 			+" AND D.STORE = A.STORE"
 			+" AND B.BUSINESS_DATE BETWEEN yearweek(DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY)) AND YEARWEEK(SYSDATE()) "
 			+" GROUP BY D.STORE_NAME, B.BUSINESS_DATE, C.VALUE"
-			+" order by 2;"
+			+" order by 2 desc;"
 			, nativeQuery = true)
 	public List<Reportes> getAnulacionesSemanalesByStore(@Param("period") String period, @Param("store") Integer store);
 
@@ -652,7 +652,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+" AND D.STORE = A.STORE"
 				+" AND STATUS = '1'"
 				+" GROUP BY D.STORE_NAME, MONTH(B.BUSINESS_DATE), C.VALUE"
-				+" ORDER BY 2;"
+				+" ORDER BY 2 desc;"
 			, nativeQuery = true)
 	public List<Reportes> getAnulacionesMensuales(@Param("period") String period);
 
@@ -679,7 +679,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 		+" AND D.STORE = A.STORE"
 		+" AND STATUS = '1'"
 		+" GROUP BY D.STORE_NAME, MONTH(B.BUSINESS_DATE), C.VALUE"
-		+" ORDER BY 2;"
+		+" ORDER BY 2 desc;"
 	, nativeQuery = true)
 	public List<Reportes> getAnulacionesMensualesByStore(@Param("period") String period, @Param("store") Integer store);
 	/************************************************************************************************************************************************** */
@@ -695,7 +695,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+" AND A.STORE = :store"
 				+" AND D.STORE = A.STORE"
 				+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
-				+" GROUP BY A.CASHIER, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
+				+" GROUP BY A.CASHIER, B.BUSINESS_DATE, C.VALUE order by 2 desc", nativeQuery = true)
 	public List<Reportes> getVentasVendedorByStore(@Param("period") String period, @Param("store") Integer store);
 
 	@Query(value="SELECT C.LABEL1,C.LABEL2,C.LABEL3,C.LABEL4\r\n"
@@ -715,7 +715,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+" AND ATTR1 = :period"
 				+" AND D.STORE = A.STORE"
 				+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
-				+" GROUP BY A.CASHIER, B.BUSINESS_DATE, C.VALUE", nativeQuery = true)
+				+" GROUP BY A.CASHIER, B.BUSINESS_DATE, C.VALUE order by 2 desc", nativeQuery = true)
 		public List<Reportes> getVentasPorVendedor(@Param("period") String period);
 
 		@Query(value="SELECT D.STORE_NAME ENTITY, YEARWEEK(B.BUSINESS_DATE) AS KEY, SUM(A.VALUE) VALUE, C.VALUE KPI, SUM(A.VALUE)/C.VALUE PROGRESS"
@@ -732,7 +732,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 							+" AND D.STORE = A.STORE"
 							+" AND B.BUSINESS_DATE BETWEEN yearweek(DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY)) AND YEARWEEK(SYSDATE()) "
 							+" GROUP BY A.CASHIER , B.BUSINESS_DATE, C.VALUE"
-							+" order by 2;", 
+							+" order by 2 desc;", 
 							nativeQuery = true)
 	public List<Reportes> getVentasVendedorSemanalesByStore(@Param("period") String period, @Param("store") Integer store);
 
@@ -757,7 +757,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 							+" AND D.STORE = A.STORE"
 							+" AND B.BUSINESS_DATE BETWEEN yearweek(DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY)) AND YEARWEEK(SYSDATE()) "
 							+" GROUP BY A.CASHIER , B.BUSINESS_DATE, C.VALUE"
-							+" order by 2;", 
+							+" order by 2 desc;", 
 							nativeQuery = true)
 		public List<Reportes> getVentasVendedorSemanales(@Param("period") String period);
 
@@ -775,7 +775,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 					+" AND A.STORE = :store"
 					+" AND D.STORE = A.STORE"
 					+" GROUP BY A.CASHIER, MONTH(B.BUSINESS_DATE), C.VALUE"
-					+" ORDER BY 2", 
+					+" ORDER BY 2 desc", 
 					nativeQuery = true)
 	public List<Reportes> getVentasVendedorMensualesByStore(@Param("period") String period, @Param("store") Integer store);
 
@@ -800,7 +800,7 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 					+" AND ATTR1 = :period"
 					+" AND D.STORE = A.STORE"
 					+" GROUP BY A.CASHIER, MONTH(B.BUSINESS_DATE), C.VALUE"
-					+" ORDER BY 2", 
+					+" ORDER BY 2 desc", 
 					nativeQuery = true)
 		public List<Reportes> getVentasVendedorMensuales(@Param("period") String period);
 }
