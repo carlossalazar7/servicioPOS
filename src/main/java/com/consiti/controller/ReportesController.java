@@ -440,7 +440,7 @@ public class ReportesController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
 	}
 	
-	@GetMapping(value="/ventas-by-empleado/{period}")
+	@GetMapping(value="/ventas-by-empleado/{period}", produces = {"application/json"})
 	public ResponseEntity<?> ventasByVendedor(@PathVariable("period") String period) {
 
 		try {
