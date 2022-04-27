@@ -476,4 +476,40 @@ public class ReportesController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
 	}
 	
+	@GetMapping(value="/ventas-by-categoria/{period}", produces = {"application/json"})
+	public ResponseEntity<?> ventasByCategoria(@PathVariable("period") String period) {
+
+		try {
+			if (period.equals("DAILY")) {
+				if (repository.getVentasCategoriaDiario(period).isEmpty() || repository.getVentasCategoriaDiario(period) ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas-by-categoria",repository.getVentasCategoriaDiario(period));
+				json.put("labels",repository.getLabelsVentasByCategoria(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+			}if(period.equals("WEEKLY")){
+				if (repository.getVentasCategoriaSemanal(period).isEmpty() || repository.getVentasCategoriaSemanal(period) ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas-by-categoria",repository.getVentasCategoriaSemanal(period));
+				json.put("labels",repository.getLabelsVentasByCategoria(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+			}if(period.equals("MONTHLY")){
+				if (repository.getVentasCategoriaMensual(period).isEmpty() || repository.getVentasCategoriaMensual(period) ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas-by-categoria",repository.getVentasCategoriaMensual(period));
+				json.put("labels",repository.getLabelsVentasByCategoria(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+			}
+		} catch (Exception e) {
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasporvendedor()",e);
+		}
+
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
+	}
+	
 }

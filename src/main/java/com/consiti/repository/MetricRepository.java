@@ -802,4 +802,74 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 					+" ORDER BY 2 desc", 
 					nativeQuery = true)
 		public List<Reportes> getVentasVendedorMensuales(@Param("period") String period);
+		
+		@Query(value="SELECT"
+				+ " COALESCE(E.CLASS,E.SUBCLASS) ENTITY,"
+				+ " BUSINESS_DATE AS 'KEY', "
+				+ " SUM(F.QTY) VALUE,"
+				+ " C.VALUE KPI, "
+				+ " SUM(F.QTY)/C.VALUE PROGRESS"
+				+ "	FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D, ITEM_MASTER E,TRAN_ITEM F"
+				+ " WHERE A.TRAN_TYPE = 'Recibo'"
+				+ "	AND B.STORE_DAY_SEQ_NO = A.STORE_DAY_SEQ_NO"
+				+ "	AND C.NAME = 'VentaCategoria'"
+				+ "	AND C.type_code = 'CG'"
+				+ "	AND ATTR1 = :period"
+				+ "	AND D.STORE = A.STORE"
+				+ "	AND E.SUBCLASS IS NOT NULL"
+				+ "	AND A.TRAN_SEQ_NO=F.TRAN_SEQ_NO"
+				+ "	AND F.ITEM=E.ITEM"
+				+ "	AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -8 DAY) AND SYSDATE()"
+				+ " GROUP BY COALESCE(E.CLASS,E.SUBCLASS), B.BUSINESS_DATE, C.VALUE order by 2 DESC",nativeQuery =true)
+		public List<Reportes> getVentasCategoriaDiario(@Param("period") String period);
+		
+		
+		@Query(value="SELECT"
+				+ " COALESCE(E.CLASS,E.SUBCLASS) ENTITY, "
+				+ " YEARWEEK(B.BUSINESS_DATE) AS 'KEY', "
+				+ " SUM(F.QTY) VALUE, "
+				+ " C.VALUE KPI, "
+				+ " SUM(F.QTY)/C.VALUE PROGRESS"
+				+ "	FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D, ITEM_MASTER E,TRAN_ITEM F"
+				+ "	WHERE A.TRAN_TYPE = 'Recibo'"
+				+ "	AND B.STORE_DAY_SEQ_NO = A.STORE_DAY_SEQ_NO"
+				+ "	AND C.NAME = 'VentaCategoria'"
+				+ "	AND C.type_code = 'CG'"
+				+ "	AND ATTR1 = :period"
+				+ "	AND D.STORE = A.STORE"
+				+ "	AND E.SUBCLASS IS NOT NULL"
+				+ "	AND A.TRAN_SEQ_NO=F.TRAN_SEQ_NO"
+				+ "	AND F.ITEM=E.ITEM"
+				+ "	AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
+				+ "GROUP BY COALESCE(E.CLASS,E.SUBCLASS), YEARWEEK(B.BUSINESS_DATE), C.VALUE order by 2 DESC",nativeQuery=true)
+		public List<Reportes> getVentasCategoriaSemanal(@Param("period") String period);
+		
+		
+		@Query(value="SELECT "
+				+ " COALESCE(E.CLASS,E.SUBCLASS) ENTITY, "
+				+ " MONTH(B.BUSINESS_DATE) AS 'KEY', "
+				+ " SUM(F.QTY) VALUE, "
+				+ " C.VALUE KPI, "
+				+ " SUM(F.QTY)/C.VALUE PROGRESS\r\n"
+				+ "	FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D, ITEM_MASTER E,TRAN_ITEM F"
+				+ "	WHERE A.TRAN_TYPE = 'Recibo'"
+				+ "	AND B.STORE_DAY_SEQ_NO = A.STORE_DAY_SEQ_NO"
+				+ "	AND C.NAME = 'VentaCategoria'"
+				+ "	AND C.type_code = 'CG'"
+				+ "	AND ATTR1 = :period"
+				+ "	AND D.STORE = A.STORE"
+				+ "	AND E.SUBCLASS IS NOT NULL"
+				+ "	AND A.TRAN_SEQ_NO=F.TRAN_SEQ_NO"
+				+ "	AND F.ITEM=E.ITEM"
+				+ "	AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
+				+ "GROUP BY COALESCE(E.CLASS,E.SUBCLASS), MONTH(B.BUSINESS_DATE), C.VALUE order by 2 DESC",nativeQuery=true)
+		public List<Reportes> getVentasCategoriaMensual(@Param("period") String period);
+		
+		@Query(value="SELECT C.LABEL1,C.LABEL2,C.LABEL3,C.LABEL4\r\n"
+				+ " FROM METRIC C\r\n"
+				+ " WHERE \r\n"
+				+ " C.NAME = 'VentaCategoria'\r\n"
+				+ " AND C.type_code = 'CG'\r\n"
+				+ " AND ATTR1 =:period", nativeQuery = true)
+			public Labels getLabelsVentasByCategoria(@Param("period") String period);
 }
