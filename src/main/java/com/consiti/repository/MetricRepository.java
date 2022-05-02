@@ -1,6 +1,7 @@
 package com.consiti.repository;
 
 import com.consiti.entity.Reportes;
+import com.consiti.entity.ReportesProductos;
 import com.consiti.entity.Labels;
 import com.consiti.entity.Metric;
 
@@ -872,4 +873,48 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+ " AND C.type_code = 'CG'\r\n"
 				+ " AND ATTR1 =:period", nativeQuery = true)
 			public Labels getLabelsVentasByCategoria(@Param("period") String period);
+		
+		
+		
+		@Query(value="SELECT \r\n"
+				+ "E.ITEM_DESC PRODUCTO, \r\n"
+				+ "B.BUSINESS_DATE AS 'FECHA', \r\n"
+				+ "SUM(F.QTY) CANTIDAD \r\n"
+				+ "	FROM TRAN_HEAD A, STORE_DAY B, STORE D, ITEM_MASTER E,TRAN_ITEM F\r\n"
+				+ "WHERE A.TRAN_TYPE = 'Recibo'\r\n"
+				+ "	AND B.STORE_DAY_SEQ_NO = A.STORE_DAY_SEQ_NO\r\n"
+				+ "	AND D.STORE = A.STORE\r\n"
+				+ "	AND A.TRAN_SEQ_NO=F.TRAN_SEQ_NO\r\n"
+				+ "	AND F.ITEM=E.ITEM\r\n"
+				+ "	AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -1 DAY) AND SYSDATE()\r\n"
+				+ "GROUP BY E.ITEM_DESC, B.BUSINESS_DATE ORDER BY 3   DESC LIMIT 10;",nativeQuery = true)
+		public List<ReportesProductos> getVentasProductosDiaria();
+		
+		@Query(value="SELECT \r\n"
+				+ "E.ITEM_DESC PRODUCTO, \r\n"
+				+ "YEARWEEK(B.BUSINESS_DATE) AS 'FECHA', \r\n"
+				+ "SUM(F.QTY) CANTIDAD \r\n"
+				+ "	FROM TRAN_HEAD A, STORE_DAY B, STORE D, ITEM_MASTER E,TRAN_ITEM F\r\n"
+				+ "WHERE A.TRAN_TYPE = 'Recibo'\r\n"
+				+ "	AND B.STORE_DAY_SEQ_NO = A.STORE_DAY_SEQ_NO\r\n"
+				+ "	AND D.STORE = A.STORE\r\n"
+				+ "	AND A.TRAN_SEQ_NO=F.TRAN_SEQ_NO\r\n"
+				+ "	AND F.ITEM=E.ITEM\r\n"
+				+ "	AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -9 DAY) AND SYSDATE()\r\n"
+				+ "GROUP BY E.ITEM_DESC, YEARWEEK(B.BUSINESS_DATE) ORDER BY 3   DESC LIMIT 10",nativeQuery = true)
+		public List<ReportesProductos> getVentasProductosSemanal();
+		
+		@Query(value="SELECT \r\n"
+				+ "E.ITEM_DESC PRODUCTO, \r\n"
+				+ "MONTH(B.BUSINESS_DATE) AS 'FECHA', \r\n"
+				+ "SUM(F.QTY) CANTIDAD \r\n"
+				+ "	FROM TRAN_HEAD A, STORE_DAY B, STORE D, ITEM_MASTER E,TRAN_ITEM F\r\n"
+				+ "WHERE A.TRAN_TYPE = 'Recibo'\r\n"
+				+ "	AND B.STORE_DAY_SEQ_NO = A.STORE_DAY_SEQ_NO\r\n"
+				+ "	AND D.STORE = A.STORE\r\n"
+				+ "	AND A.TRAN_SEQ_NO=F.TRAN_SEQ_NO\r\n"
+				+ "	AND F.ITEM=E.ITEM\r\n"
+				+ "	AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -30 DAY) AND SYSDATE()\r\n"
+				+ "GROUP BY E.ITEM_DESC, MONTH(B.BUSINESS_DATE) ORDER BY 3   DESC LIMIT 10",nativeQuery = true)
+		public List<ReportesProductos> getVentasProductosMensual();
 }
