@@ -716,8 +716,9 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 				+" AND ATTR1 = :period"
 				+" AND D.STORE = A.STORE"
 				+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
+				+" AND B.BUSINESS_DATE = :fecha"
 				+" GROUP BY A.SALESPERSON, B.BUSINESS_DATE, C.VALUE order by 2 desc", nativeQuery = true)
-		public List<Reportes> getVentasPorVendedor(@Param("period") String period);
+		public List<Reportes> getVentasPorVendedor(@Param("period") String period,@Param("fecha") String fecha);
 
 		@Query(value="SELECT D.STORE_NAME ENTITY, YEARWEEK(B.BUSINESS_DATE) AS KEY, SUM(A.VALUE) VALUE, C.VALUE KPI, SUM(A.VALUE)/C.VALUE PROGRESS"
 							+" FROM TRAN_HEAD A, STORE_DAY B, METRIC C, STORE D"
@@ -756,9 +757,10 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 						+" AND C.type_code = 'SP'"
 						+" AND ATTR1 = :period"
 						+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 WEEK) AND SYSDATE()"
+						+" AND YEARWEEK(B.BUSINESS_DATE) = :fecha"
 						+" GROUP BY A.SALESPERSON, YEARWEEK(B.BUSINESS_DATE), C.VALUE ORDER BY YEARWEEK(B.BUSINESS_DATE) DESC", 
 							nativeQuery = true)
-		public List<Reportes> getVentasVendedorSemanales(@Param("period") String period);
+		public List<Reportes> getVentasVendedorSemanales(@Param("period") String period,@Param("fecha")String fecha);
 
 		@Query(value="SELECT A.CASHIER ENTITY, MONTH(B.BUSINESS_DATE) AS 'KEY',"
 					+" SUM(A.VALUE) VALUE, C.VALUE KPI, sum(A.VALUE)/C.VALUE PROGRESS"
@@ -799,10 +801,12 @@ public interface MetricRepository extends JpaRepository<Metric, Integer>{
 					+" AND ATTR1 = :period"
 					+" AND D.STORE = A.STORE"
 					+" AND B.BUSINESS_DATE BETWEEN DATE_ADD(SYSDATE(), INTERVAL -C.ATTR2 DAY) AND SYSDATE()"
+					+" AND MONTH(B.BUSINESS_DATE)= :mes"
+					+" AND YEAR(B.BUSINESS_DATE)= :ano"
 					+" GROUP BY A.SALESPERSON, MONTH(B.BUSINESS_DATE), C.VALUE"
 					+" ORDER BY 2 desc", 
 					nativeQuery = true)
-		public List<Reportes> getVentasVendedorMensuales(@Param("period") String period);
+		public List<Reportes> getVentasVendedorMensuales(@Param("period") String period,@Param("ano") String ano,@Param("mes")String mes);
 		
 		@Query(value="SELECT"
 				+ " COALESCE(E.CLASS,E.SUBCLASS) ENTITY,"
