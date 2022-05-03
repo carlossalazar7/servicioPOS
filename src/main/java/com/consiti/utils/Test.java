@@ -5,11 +5,11 @@ import java.util.regex.Pattern;
 
 public class Test {
 
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		String fecha = "2022-04";
 		
 
-	}
+	}*/
 	
 	public static boolean
     validMonthDate(String fecha)
