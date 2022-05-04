@@ -222,6 +222,50 @@ public class ReportesController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
 	}
 	
+	
+	@GetMapping(value="/ventas-fecha/{period}/{fecha}", produces = {"application/json"})
+	public ResponseEntity<?> ventasByFecha(@PathVariable("period") String period,@PathVariable("fecha") String fecha) {
+		
+		try {
+			if (period.equals("DAILY")) {
+				if (repository.getVentasDiariasByFecha(period,fecha).isEmpty() || repository.getVentasDiariasByFecha(period,fecha) ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas",repository.getVentasDiariasByFecha(period,fecha));
+				json.put("labels",repository.getLabelsVentasDiarias(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+			}if(period.equals("WEEKLY")){
+				if (repository.getVentasSemanalesByFecha(period,fecha).isEmpty() || repository.getVentasSemanalesByFecha(period,fecha) ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas",repository.getVentasSemanalesByFecha(period,fecha));
+				json.put("labels",repository.getLabelsVentasSemanales(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+			}if(period.equals("MONTHLY")){
+				if(Test.validMonthDate(fecha)) {
+					String[] dates = Test.getYearMonth(fecha);
+				if (repository.getVentasMensualesByFecha(period,dates[0],dates[1]).isEmpty() || repository.getVentasMensualesByFecha(period,dates[0],dates[1]) ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas",repository.getVentasMensualesByFecha(period,dates[0],dates[1]));
+				json.put("labels",repository.getLabelsVentasMensuales(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+			}
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Mal formato de fecha mes : '"+fecha+"' Ex. YYYY-MM"));
+			}
+			
+		} catch (Exception e) {
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasDiarias()",e);
+		}
+		
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
+	}
+	
+	
+	
 	@GetMapping(value="/ventas/{period}/{store}")
 	public ResponseEntity<?> ventasByStore(@PathVariable("period") String period, @PathVariable("store") Integer store) {
 		
