@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.consiti.entity.Mensaje;
 import com.consiti.repository.MetricRepository;
 import com.consiti.service.MetricService;
+import com.consiti.utils.Test;
 
 
 
@@ -221,6 +222,50 @@ public class ReportesController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
 	}
 	
+	
+	@GetMapping(value="/ventas-fecha/{period}/{fecha}", produces = {"application/json"})
+	public ResponseEntity<?> ventasByFecha(@PathVariable("period") String period,@PathVariable("fecha") String fecha) {
+		
+		try {
+			if (period.equals("DAILY")) {
+				if (repository.getVentasDiariasByFecha(period,fecha).isEmpty() || repository.getVentasDiariasByFecha(period,fecha) ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas",repository.getVentasDiariasByFecha(period,fecha));
+				json.put("labels",repository.getLabelsVentasDiarias(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+			}if(period.equals("WEEKLY")){
+				if (repository.getVentasSemanalesByFecha(period,fecha).isEmpty() || repository.getVentasSemanalesByFecha(period,fecha) ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas",repository.getVentasSemanalesByFecha(period,fecha));
+				json.put("labels",repository.getLabelsVentasSemanales(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+			}if(period.equals("MONTHLY")){
+				if(Test.validMonthDate(fecha)) {
+					String[] dates = Test.getYearMonth(fecha);
+				if (repository.getVentasMensualesByFecha(period,dates[0],dates[1]).isEmpty() || repository.getVentasMensualesByFecha(period,dates[0],dates[1]) ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas",repository.getVentasMensualesByFecha(period,dates[0],dates[1]));
+				json.put("labels",repository.getLabelsVentasMensuales(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+			}
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Mal formato de fecha mes : '"+fecha+"' Ex. YYYY-MM"));
+			}
+			
+		} catch (Exception e) {
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasDiarias()",e);
+		}
+		
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
+	}
+	
+	
+	
 	@GetMapping(value="/ventas/{period}/{store}")
 	public ResponseEntity<?> ventasByStore(@PathVariable("period") String period, @PathVariable("store") Integer store) {
 		
@@ -403,7 +448,7 @@ public class ReportesController {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
 	}
 
-	@GetMapping(value="/ventas-by-empleado/{period}/{store}")
+	/*@GetMapping(value="/ventas-by-empleado/{period}/{store}")
 	public ResponseEntity<?> ventasByVendedorAndStore(@PathVariable("period") String period,@PathVariable("store") Integer store) {
 
 		try {
@@ -438,35 +483,113 @@ public class ReportesController {
 		}
 
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
-	}
+	}*/
 	
-	@GetMapping(value="/ventas-by-empleado/{period}")
-	public ResponseEntity<?> ventasByVendedor(@PathVariable("period") String period) {
-
+	
+	
+	@GetMapping(value="/ventas-by-empleado/{period}/{fecha}", produces = {"application/json"})
+	public ResponseEntity<?> ventasByVendedor(@PathVariable("period") String period,@PathVariable("fecha")String fecha) {
+		boolean validation;
 		try {
 			if (period.equals("DAILY")) {
-				if (repository.getVentasPorVendedor(period).isEmpty() || repository.getVentasPorVendedor(period) ==null ) {
+				if (repository.getVentasPorVendedor(period,fecha).isEmpty() || repository.getVentasPorVendedor(period,fecha) ==null ) {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
 				}
 				Map<String, Object> json = new HashMap<String, Object>();
-				json.put("ventas-by-empleado",repository.getVentasPorVendedor(period));
+				json.put("ventas-by-empleado",repository.getVentasPorVendedor(period,fecha));
 				json.put("labels",repository.getLabelsVentasByVendedor());
 				return ResponseEntity.status(HttpStatus.OK).body(json);
 			}if(period.equals("WEEKLY")){
-				if (repository.getVentasVendedorSemanales(period).isEmpty() || repository.getVentasVendedorSemanales(period) ==null ) {
+				if (repository.getVentasVendedorSemanales(period,fecha).isEmpty() || repository.getVentasVendedorSemanales(period,fecha) ==null ) {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
 				}
 				Map<String, Object> json = new HashMap<String, Object>();
-				json.put("ventas-by-empleado",repository.getVentasVendedorSemanales(period));
+				json.put("ventas-by-empleado",repository.getVentasVendedorSemanales(period,fecha));
 				json.put("labels",repository.getLabelsVentasByVendedorSemanales(period));
 				return ResponseEntity.status(HttpStatus.OK).body(json);
 			}if(period.equals("MONTHLY")){
-				if (repository.getVentasVendedorMensuales(period).isEmpty() || repository.getVentasVendedorMensuales(period) ==null ) {
+				if(validation=Test.validMonthDate(fecha)) {
+					String[]data = Test.getYearMonth(fecha);
+				if (repository.getVentasVendedorMensuales(period,data[1],data[0]).isEmpty() || repository.getVentasVendedorMensuales(period,data[1],data[0]) ==null ) {
 					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
 				}
 				Map<String, Object> json = new HashMap<String, Object>();
-				json.put("ventas-by-empleado",repository.getVentasVendedorMensuales(period));
+				json.put("ventas-by-empleado",repository.getVentasVendedorMensuales(period,data[1],data[0]));
 				json.put("labels",repository.getLabelsVentasByVendedorMensuales(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+				}
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Mal formato de fecha mes : '"+fecha+"' Ex. YYYY-MM"));
+			}
+		} catch (Exception e) {
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasporvendedor()",e);
+		}
+
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
+	}
+	
+	@GetMapping(value="/ventas-by-categoria/{period}", produces = {"application/json"})
+	public ResponseEntity<?> ventasByCategoria(@PathVariable("period") String period) {
+
+		try {
+			if (period.equals("DAILY")) {
+				if (repository.getVentasCategoriaDiario(period).isEmpty() || repository.getVentasCategoriaDiario(period) ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas-by-categoria",repository.getVentasCategoriaDiario(period));
+				json.put("labels",repository.getLabelsVentasByCategoria(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+			}if(period.equals("WEEKLY")){
+				if (repository.getVentasCategoriaSemanal(period).isEmpty() || repository.getVentasCategoriaSemanal(period) ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas-by-categoria",repository.getVentasCategoriaSemanal(period));
+				json.put("labels",repository.getLabelsVentasByCategoria(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+			}if(period.equals("MONTHLY")){
+				if (repository.getVentasCategoriaMensual(period).isEmpty() || repository.getVentasCategoriaMensual(period) ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas-by-categoria",repository.getVentasCategoriaMensual(period));
+				json.put("labels",repository.getLabelsVentasByCategoria(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+			}
+		} catch (Exception e) {
+			Logger.getLogger(getClass().getName()).log(Level.SEVERE,"Error al obtener ventasporvendedor()",e);
+		}
+
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Mensaje("Conflictos en el servidor"));
+	}
+	
+	@GetMapping(value="/ventas-by-producto/{period}", produces = {"application/json"})
+	public ResponseEntity<?> ventasByProductos(@PathVariable("period") String period) {
+
+		try {
+			if (period.equals("DAILY")) {
+				if (repository.getVentasProductosDiaria().isEmpty() || repository.getVentasProductosDiaria() ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas-by-producto",repository.getVentasProductosDiaria());
+				json.put("labels",repository.getLabelsVentasByCategoria(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+			}if(period.equals("WEEKLY")){
+				if (repository.getVentasProductosSemanal().isEmpty() || repository.getVentasProductosSemanal() ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas-by-producto",repository.getVentasProductosSemanal());
+				json.put("labels",repository.getLabelsVentasByCategoria(period));
+				return ResponseEntity.status(HttpStatus.OK).body(json);
+			}if(period.equals("MONTHLY")){
+				if (repository.getVentasProductosMensual().isEmpty() || repository.getVentasProductosMensual() ==null ) {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Mensaje("Busqueda con parametro period: '"+period+"' sin resultados"));
+				}
+				Map<String, Object> json = new HashMap<String, Object>();
+				json.put("ventas-by-producto",repository.getVentasProductosMensual());
+				json.put("labels",repository.getLabelsVentasByCategoria(period));
 				return ResponseEntity.status(HttpStatus.OK).body(json);
 			}
 		} catch (Exception e) {
