@@ -185,7 +185,7 @@ public class ReportesController {
 	 * @param store
 	 * @return
 	 */
-	@GetMapping(value="/ventas/{period}")
+	@GetMapping(value="/ventas/{period}", produces= {"application/json"})
 	public ResponseEntity<?> ventas(@PathVariable("period") String period) {
 		
 		try {
